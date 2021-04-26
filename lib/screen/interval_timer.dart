@@ -1,3 +1,5 @@
+import 'package:countdown_timer/model/round_state.dart';
+import 'package:countdown_timer/model/work_state.dart';
 import 'package:flutter/material.dart';
 
 class IntervalTimer extends StatefulWidget {
@@ -5,6 +7,7 @@ class IntervalTimer extends StatefulWidget {
   static const int maxWorkDurationInSeconds = 180;
   static const int maxRestDurationInSeconds = 120;
   static const int maxWarmUpDurationInSeconds = 60;
+  static const int maxCoolDownDurationInSeconds = 60;
   static const int maxSets = 20;
   @override
   _IntervalTimerState createState() => _IntervalTimerState();
@@ -18,7 +21,44 @@ class _IntervalTimerState extends State<IntervalTimer> with TickerProviderStateM
   int _remainingWorkDuration = 60;
   int _remainingRestDuration = 30;
   int _remainingWarmUpDuration = 30;
+  int _remainingCoolDownDuration = 30;
   int _remainingSets = 10;
+  
+  static const Map<RoundStates, RoundState> _roundStates = {
+    RoundStates.end: RoundState(
+      current: RoundStates.end,
+      next: RoundStates.warmUp,
+      duration: Duration.zero,
+    ),
+    RoundStates.warmUp: RoundState(
+      current: RoundStates.warmUp,
+      next: RoundStates.work,
+      duration: Duration.zero,
+    ),
+    RoundStates.work: RoundState(
+      current: RoundStates.work,
+      next: RoundStates.coolDown,
+      duration: Duration.zero,
+    ),
+    RoundStates.coolDown: RoundState(
+      current: RoundStates.coolDown,
+      next: RoundStates.end,
+      duration: Duration.zero,
+    ),
+  };
+
+  static const Map<WorkStates, WorkState> _workStates = {
+    WorkStates.work: WorkState(
+      current: WorkStates.work,
+      next: WorkStates.rest,
+      duration: Duration.zero,
+    ),
+    WorkStates.rest: WorkState(
+      current: WorkStates.rest,
+      next: WorkStates.work,
+      duration: Duration.zero,
+    ),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +78,22 @@ class _IntervalTimerState extends State<IntervalTimer> with TickerProviderStateM
           max: IntervalTimer.maxWarmUpDurationInSeconds.toDouble(),
           onChanged: (newDuration) {
             setState(() {_remainingWarmUpDuration = newDuration.toInt();}
+            );
+          },
+        ),
+        Text(durationToString(_remainingWarmUpDuration)),
+      ],
+    );
+    final Widget coolDownDurationSlider = Row(
+      children: <Widget>[
+        Text('Cool down Duration(MM:SS): '),
+        Slider(
+          divisions: IntervalTimer.maxCoolDownDurationInSeconds ~/ 15,
+          value: _remainingCoolDownDuration.toDouble(),
+          min: 0,
+          max: IntervalTimer.maxCoolDownDurationInSeconds.toDouble(),
+          onChanged: (newDuration) {
+            setState(() {_remainingCoolDownDuration = newDuration.toInt();}
             );
           },
         ),

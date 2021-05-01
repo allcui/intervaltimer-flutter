@@ -15,15 +15,6 @@ class IntervalTimer extends StatefulWidget {
 
 class _IntervalTimerState extends State<IntervalTimer> with TickerProviderStateMixin{
 
-  AnimationController _countdownController;
-  Animation _countdownAnimation;
-
-  int _remainingWorkDuration = 60;
-  int _remainingRestDuration = 30;
-  int _remainingWarmUpDuration = 30;
-  int _remainingCoolDownDuration = 30;
-  int _remainingSets = 10;
-  
   static const Map<RoundStates, RoundState> _roundStates = {
     RoundStates.end: RoundState(
       current: RoundStates.end,
@@ -59,6 +50,31 @@ class _IntervalTimerState extends State<IntervalTimer> with TickerProviderStateM
       duration: Duration.zero,
     ),
   };
+
+
+  AnimationController _countdownController;
+  Animation _countdownAnimation;
+
+  int _remainingWorkDuration = 60;
+  int _remainingRestDuration = 30;
+  int _remainingWarmUpDuration = 30;
+  int _remainingCoolDownDuration = 30;
+  int _remainingSets = 10;
+
+  RoundStates _currentRoundState = RoundStates.end;
+
+  @override
+  void initState() {
+    _countdownController = AnimationController(
+      vsync: this,
+      duration: _roundStates[_currentRoundState].duration,
+    );
+    _countdownController.addStatusListener((status) {
+      if (status == AnimationStatus.completed && _currentRoundState != RoundStates.coolDown) _updateRoundState(_roundStates[_currentRoundState].next);
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -174,6 +190,15 @@ class _IntervalTimerState extends State<IntervalTimer> with TickerProviderStateM
     final minutesString = '$minutes'.padLeft(2, '0');
     final secondsString = '$seconds'.padLeft(2, '0');
     return '$minutesString:$secondsString';
+  }
+
+  void _startTimer(){
+    _updateRoundState(RoundStates.warmUp);
+  }
+  void _updateRoundState(RoundStates roundState) {
+    setState(() {
+      _currentRoundState = roundState;
+    });
   }
 }
 

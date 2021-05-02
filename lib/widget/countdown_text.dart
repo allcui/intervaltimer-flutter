@@ -5,13 +5,10 @@ class CountdownText extends AnimatedWidget {
     Key key,
     @required this.animation,
     this.fontSize = 20.0,
-    this.startText = "",
-    this.endText = "",
   }) :  super(key: key, listenable: animation);
-  final Animation<double> animation;
+
+  final Animation<int> animation;
   final double fontSize;
-  final String startText;
-  final String endText;
 
   @override
   build(BuildContext context) {

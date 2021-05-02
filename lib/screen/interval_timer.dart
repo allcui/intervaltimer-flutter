@@ -1,9 +1,12 @@
 import 'dart:developer';
 
+import 'package:countdown_timer/model/device.dart';
 import 'package:countdown_timer/model/round_state.dart';
+import 'package:countdown_timer/model/slider_item.dart';
 import 'package:countdown_timer/model/timer_profile.dart';
 import 'package:countdown_timer/model/work_state.dart';
 import 'package:countdown_timer/widget/countdown_text.dart';
+import 'package:countdown_timer/widget/custom_slider.dart';
 import 'package:flutter/material.dart';
 
 class IntervalTimer extends StatefulWidget {
@@ -12,7 +15,7 @@ class IntervalTimer extends StatefulWidget {
   static const int maxRestDurationInSeconds = 120;
   static const int maxWarmUpDurationInSeconds = 60;
   static const int maxCoolDownDurationInSeconds = 60;
-  static const int maxSets = 20;
+  static const int maxSetCount = 20;
   @override
   _IntervalTimerState createState() => _IntervalTimerState();
 }
@@ -86,6 +89,8 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
+    final Device device = Device(context);
+    final double width = device.getWidth();
     final Widget timer = (_countdownController.status == AnimationStatus.forward)
         ? CountdownText(animation: _countdownAnimation, fontSize: 100.0,)
         : Text(durationToString(_remainingWarmUpDuration), style: TextStyle(fontSize: 100.0));
@@ -160,7 +165,7 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
         Slider(
           value: _remainingSets.toDouble(),
           min: 0,
-          max: IntervalTimer.maxSets.toDouble(),
+          max: IntervalTimer.maxSetCount.toDouble(),
           onChanged: (newSetCount) {
             setState(() {_remainingSets = newSetCount.toInt();}
             );
@@ -184,6 +189,26 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
               setCountSlider,
               IconButton(onPressed: () => _startTimer(), icon: Icon(Icons.play_arrow, color: Colors.white,),),
               Text(_currentRoundState.toString(), style: TextStyle(color: Colors.white),),
+              CustomSlider(
+                sliderItem: SliderItems.warmUp,
+                width: width * 0.9,
+              ),
+              CustomSlider(
+                sliderItem: SliderItems.work,
+                width: width * 0.9,
+              ),
+              CustomSlider(
+                sliderItem: SliderItems.rest,
+                width: width * 0.9,
+              ),
+              CustomSlider(
+                sliderItem: SliderItems.coolDown,
+                width: width * 0.9,
+              ),
+              CustomSlider(
+                sliderItem: SliderItems.setCount,
+                width: width * 0.9,
+              ),
             ],
           ),
         ),

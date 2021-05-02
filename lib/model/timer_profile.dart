@@ -3,11 +3,17 @@ import 'package:flutter/material.dart';
 
 class TimerProfile{
 
-  static const Duration defaultWarmUpDuration = Duration(seconds: 3);
-  static const Duration defaultWorkDuration = Duration(seconds: 4);
-  static const Duration defaultRestDuration = Duration(seconds: 3);
-  static const Duration defaultCoolDownDuration = Duration(seconds: 5);
-  static const int defaultSetCount = 20;
+  static const int defaultWarmUpDurationInSeconds = 3;
+  static const int defaultWorkDurationInSeconds = 4;
+  static const int defaultRestDurationInSeconds = 3;
+  static const int defaultCoolDownDurationInSeconds = 5;
+
+  static const Duration defaultWarmUpDuration = Duration(seconds: defaultWarmUpDurationInSeconds);
+  static const Duration defaultWorkDuration = Duration(seconds: defaultWorkDurationInSeconds);
+  static const Duration defaultRestDuration = Duration(seconds: defaultRestDurationInSeconds);
+  static const Duration defaultCoolDownDuration = Duration(seconds: defaultCoolDownDurationInSeconds);
+
+  static const int defaultSetCount = 10;
 
   static TimerProfile getDefaultProfile(){
     return TimerProfile(

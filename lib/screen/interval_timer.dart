@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:countdown_timer/model/round_state.dart';
+import 'package:countdown_timer/model/timer_profile.dart';
 import 'package:countdown_timer/model/work_state.dart';
+import 'package:countdown_timer/widget/countdown_text.dart';
 import 'package:flutter/material.dart';
 
 class IntervalTimer extends StatefulWidget {
@@ -13,7 +17,7 @@ class IntervalTimer extends StatefulWidget {
   _IntervalTimerState createState() => _IntervalTimerState();
 }
 
-class _IntervalTimerState extends State<IntervalTimer> with TickerProviderStateMixin{
+class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProviderStateMixin{
 
   static const Map<RoundStates, RoundState> _roundStates = {
     RoundStates.end: RoundState(
@@ -54,12 +58,14 @@ class _IntervalTimerState extends State<IntervalTimer> with TickerProviderStateM
 
   AnimationController _countdownController;
   Animation _countdownAnimation;
+  Tween<double> _countdownAnimationTween = Tween(begin: 0, end: 0);
 
-  int _remainingWorkDuration = 60;
-  int _remainingRestDuration = 30;
-  int _remainingWarmUpDuration = 30;
-  int _remainingCoolDownDuration = 30;
-  int _remainingSets = 10;
+  TimerProfile _profileSelected = TimerProfile.getDefaultProfile();
+  int _remainingWorkDuration = TimerProfile.getDefaultProfile().workDuration.inSeconds;
+  int _remainingRestDuration = TimerProfile.getDefaultProfile().restDuration.inSeconds;
+  int _remainingWarmUpDuration = TimerProfile.getDefaultProfile().warmUpDuration.inSeconds;
+  int _remainingCoolDownDuration = TimerProfile.getDefaultProfile().coolDownDuration.inSeconds;
+  int _remainingSets = TimerProfile.getDefaultProfile().setCount;
 
   RoundStates _currentRoundState = RoundStates.end;
 
@@ -73,17 +79,15 @@ class _IntervalTimerState extends State<IntervalTimer> with TickerProviderStateM
       if (status == AnimationStatus.completed && _currentRoundState != RoundStates.coolDown) _updateRoundState(_roundStates[_currentRoundState].next);
     });
 
+    _countdownAnimationTween.begin = _roundStates[_currentRoundState].duration.inSeconds.toDouble();
+    _countdownAnimationTween.end = 0.01;
+    _countdownAnimation = _countdownAnimationTween.animate(_countdownController);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final Widget timer = Text(
-      durationToString(_remainingWorkDuration),
-      style: TextStyle(
-        fontSize: 150.0,
-      ),
-    );
+    final Widget timer = CountdownText(animation: _countdownAnimation,);
     final Widget warmUpDurationSlider = Row(
       children: <Widget>[
         Text('Warm Up Duration(MM:SS): '),
@@ -174,12 +178,37 @@ class _IntervalTimerState extends State<IntervalTimer> with TickerProviderStateM
               warmUpDurationSlider,
               workDurationSlider,
               restDurationSlider,
-              setCountSlider
+              setCountSlider,
+              IconButton(onPressed: () => _startTimer(), icon: Icon(Icons.play_arrow, color: Colors.white,),),
+              Text(_currentRoundState.toString(), style: TextStyle(color: Colors.white),),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _startTimer(){
+    _profileSelected = TimerProfile(
+      warmUpDuration: Duration(seconds: _remainingWarmUpDuration),
+      workDuration: Duration(seconds: _remainingWorkDuration),
+      restDuration: Duration(seconds: _remainingRestDuration),
+      coolDownDuration: Duration(seconds: _remainingCoolDownDuration),
+      setCount: _remainingSets,
+    );
+    _updateRoundState(RoundStates.warmUp);
+  }
+  void _updateRoundState(RoundStates roundState) async {
+    setState(() {
+      _currentRoundState = roundState;
+      log('updated round state to ' + roundState.toString());
+    });
+    Duration currentRoundStateDuration = _profileSelected.getDurationByRoundState(_currentRoundState);
+    _countdownAnimationTween.begin = currentRoundStateDuration.inSeconds.toDouble();
+
+    _countdownController.duration = currentRoundStateDuration;
+    _countdownController.reset();
+    await _countdownController.forward();
   }
 
   String durationToString(int durationInSeconds){
@@ -190,15 +219,6 @@ class _IntervalTimerState extends State<IntervalTimer> with TickerProviderStateM
     final minutesString = '$minutes'.padLeft(2, '0');
     final secondsString = '$seconds'.padLeft(2, '0');
     return '$minutesString:$secondsString';
-  }
-
-  void _startTimer(){
-    _updateRoundState(RoundStates.warmUp);
-  }
-  void _updateRoundState(RoundStates roundState) {
-    setState(() {
-      _currentRoundState = roundState;
-    });
   }
 }
 

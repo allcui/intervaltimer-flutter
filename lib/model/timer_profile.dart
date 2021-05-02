@@ -1,11 +1,23 @@
+import 'package:countdown_timer/model/round_state.dart';
 import 'package:flutter/material.dart';
 
 class TimerProfile{
 
-  static const defaultWarmUpDuration = Duration(seconds: 30);
-  static const defaultWorkDuration = Duration(seconds: 60);
-  static const defaultRestDuration = Duration(seconds: 30);
-  static const defaultCoolDownDuration = Duration(seconds: 60);
+  static const Duration defaultWarmUpDuration = Duration(seconds: 5);
+  static const Duration defaultWorkDuration = Duration(seconds: 4);
+  static const Duration defaultRestDuration = Duration(seconds: 3);
+  static const Duration defaultCoolDownDuration = Duration(seconds: 2);
+  static const int defaultSetCount = 20;
+
+  static TimerProfile getDefaultProfile(){
+    return TimerProfile(
+      warmUpDuration: defaultWarmUpDuration,
+      workDuration: defaultWorkDuration,
+      restDuration: defaultRestDuration,
+      coolDownDuration: defaultCoolDownDuration,
+      setCount: defaultSetCount,
+    );
+  }
 
   const TimerProfile({
     this.id = 1,
@@ -14,6 +26,7 @@ class TimerProfile{
     @required this.workDuration,
     @required this.restDuration,
     @required this.coolDownDuration,
+    @required this.setCount,
   });
 
   final int id;
@@ -22,13 +35,25 @@ class TimerProfile{
   final Duration workDuration;
   final Duration restDuration;
   final Duration coolDownDuration;
+  final int setCount;
 
-  TimerProfile getDefaultProfile(){
-    return TimerProfile(
-      warmUpDuration: defaultWarmUpDuration,
-      workDuration: defaultWorkDuration,
-      restDuration: defaultRestDuration,
-      coolDownDuration: defaultCoolDownDuration,
-    );
+  Duration getDurationByRoundState(RoundStates roundState){
+    switch (roundState) {
+      case RoundStates.warmUp:
+        return warmUpDuration;
+        break;
+      case RoundStates.work:
+        return workDuration;
+        break;
+      case RoundStates.rest:
+        return restDuration;
+        break;
+      case RoundStates.coolDown:
+        return coolDownDuration;
+        break;
+      default:
+        return Duration.zero;
+    }
   }
+
 }

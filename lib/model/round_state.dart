@@ -1,4 +1,4 @@
-enum RoundStates { end, warmUp, work, coolDown }
+enum RoundStates { end, warmUp, work, rest, coolDown }
 
 class RoundState{
   const RoundState({

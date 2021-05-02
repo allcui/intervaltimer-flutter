@@ -51,20 +51,21 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
     ),
   };
 
-  static const Map<WorkStates, WorkState> _workStates = {
-    WorkStates.work: WorkState(
-      current: WorkStates.work,
-      next: WorkStates.rest,
-      duration: Duration.zero,
-    ),
-    WorkStates.rest: WorkState(
-      current: WorkStates.rest,
-      next: WorkStates.work,
-      duration: Duration.zero,
-    ),
+  static const Map<RoundStates, Color> _roundStatesColors = {
+    RoundStates.warmUp: Colors.pinkAccent,
+    RoundStates.work: Colors.redAccent,
+    RoundStates.rest: Colors.greenAccent,
+    RoundStates.coolDown: Colors.blueGrey,
+    RoundStates.end: Colors.transparent,
   };
 
-
+  static const Map<RoundStates, String> _roundStatesMessages = {
+    RoundStates.warmUp: 'Warm Up Phase',
+    RoundStates.work: 'Intense Work Out!',
+    RoundStates.rest: 'Rest Phase, Slow Down!',
+    RoundStates.coolDown: 'Cool Down Phase, You Are Getting There!',
+    RoundStates.end: 'Start a Work Out!',
+  };
   AnimationController _countdownController;
   Animation _countdownAnimation;
   StepTween _countdownAnimationTween = StepTween(begin: 0, end: 0);
@@ -102,13 +103,21 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
     final double width = device.getWidth();
     final Widget timer = (_countdownController.status == AnimationStatus.forward)
         ? CountdownText(animation: _countdownAnimation, fontSize: 100.0,)
-        : Text(durationToString(_sliderItemCount[SliderItems.warmUp]), style: TextStyle(fontSize: 100.0));
+        : Text(durationToString(0), style: TextStyle(fontSize: 100.0));
 
     final double sliderWidth = width * 0.9;
     final Widget sliders = Column(
       children: <Widget>[
         ...SliderItems.values.map((item) => _buildSliderItem(sliderItem: item, width: sliderWidth)).toList(),
       ]
+    );
+    final Widget controlButtons = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        IconButton(onPressed: () => _startTimer(), icon: Icon(Icons.play_arrow, color: Colors.white,),),
+        IconButton(onPressed: () => _endWorkOut(), icon: Icon(Icons.stop, color: Colors.white,),),
+        IconButton(onPressed: () => _pauseAndResumeTimer(), icon: Icon(Icons.pause, color: Colors.white,),),
+      ],
     );
     return Scaffold(
       appBar: AppBar(title: Text(IntervalTimer.title),),
@@ -118,7 +127,7 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
           child: Column(
             children: <Widget>[
               timer,
-              IconButton(onPressed: () => _startTimer(), icon: Icon(Icons.play_arrow, color: Colors.white,),),
+              controlButtons,
               Text(_currentRoundState.toString(), style: TextStyle(color: Colors.white),),
               sliders,
             ],
@@ -152,7 +161,9 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
         continue asNormal;
 
       case RoundStates.end:
-        _showCompleteDialog();
+        if (_currentWorkOut.sufficientWorkOutCompleted()) _showCompleteDialog();
+        continue asNormal;
+
       asNormal:
       default:
         setState(() {
@@ -193,8 +204,39 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
     });
   }
 
-  void _showCompleteDialog() {
+  Future<dynamic> _showCompleteDialog() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Text('Bravo! You have completed a workout!!!'),
+            actions: [
+              TextButton(child: Text('Save and Share'), onPressed: () => _saveWorkOut(),),
+              TextButton(child: Text('Close'), onPressed: () {
+                Navigator.of(context).pop();
+                _saveWorkOut(shareWorkOut: false);
+                })
+            ],
+          );
+        });
+  }
 
+  void _saveWorkOut({bool shareWorkOut = true}) {
+    WorkOut workOutToSave = _currentWorkOut;
+  }
+
+  void _endWorkOut(){
+    _updateRoundState(RoundStates.end);
+  }
+
+  void _pauseAndResumeTimer() {
+    if (_countdownController.isAnimating) {
+      _countdownController.stop(canceled: false);
+    } else {
+      _countdownController.forward();
+    }
+
+    log(_countdownController.isAnimating.toString());
   }
 
 }

@@ -9,10 +9,12 @@ class CustomSlider extends StatefulWidget {
   const CustomSlider({
     this.sliderItem,
     this.width,
+    this.callback,
   });
 
   final SliderItems sliderItem;
   final double width;
+  final void Function(SliderItems, int) callback;
   @override
   _CustomSliderState createState() => _CustomSliderState();
 }
@@ -27,19 +29,19 @@ class _CustomSliderState extends State<CustomSlider> {
     ),
     SliderItems.work: SliderItem(
       item: SliderItems.work,
-      textDescription: 'Warm Up Duration(MM:SS):',
+      textDescription: 'Work Duration(MM:SS):',
       divisions: IntervalTimer.maxWorkDurationInSeconds ~/ 15,
       maxValue: IntervalTimer.maxWorkDurationInSeconds.toDouble(),
     ),
     SliderItems.rest: SliderItem(
-      item: SliderItems.warmUp,
-      textDescription: 'Warm Up Duration(MM:SS):',
+      item: SliderItems.rest,
+      textDescription: 'Rest Duration(MM:SS):',
       divisions: IntervalTimer.maxRestDurationInSeconds ~/ 15,
       maxValue: IntervalTimer.maxRestDurationInSeconds.toDouble(),
     ),
     SliderItems.coolDown: SliderItem(
       item: SliderItems.coolDown,
-      textDescription: 'Warm Up Duration(MM:SS):',
+      textDescription: 'Cooldown Duration(MM:SS):',
       divisions: IntervalTimer.maxCoolDownDurationInSeconds ~/ 15,
       maxValue: IntervalTimer.maxCoolDownDurationInSeconds.toDouble(),
     ),
@@ -68,7 +70,6 @@ class _CustomSliderState extends State<CustomSlider> {
   }
   @override
   Widget build(BuildContext context) {
-    log(_count.toString());
     final double width = widget.width;
     final SliderItem sliderItem = sliderItems[widget.sliderItem];
     return Row(
@@ -83,10 +84,7 @@ class _CustomSliderState extends State<CustomSlider> {
             divisions: sliderItem.divisions,
             value: _count.toDouble(),
             max: sliderItem.maxValue,
-            onChanged: (newCount) {
-              setState(() {_count = newCount.toInt();}
-              );
-            },
+            onChanged: (newCount) => _onChanged(newCount),
           ),
         ),
         Container(
@@ -97,6 +95,12 @@ class _CustomSliderState extends State<CustomSlider> {
       ],
     );
   }
+
+  void _onChanged(double newCount) {
+    {setState(() {_count = newCount.toInt();});}
+    widget.callback(widget.sliderItem, newCount.toInt());
+  }
+
 
   String durationToString(int durationInSeconds){
     final duration = Duration(seconds: durationInSeconds);

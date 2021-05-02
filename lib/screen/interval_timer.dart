@@ -5,6 +5,7 @@ import 'package:countdown_timer/model/round_state.dart';
 import 'package:countdown_timer/model/slider_item.dart';
 import 'package:countdown_timer/model/timer_profile.dart';
 import 'package:countdown_timer/model/work_state.dart';
+import 'package:countdown_timer/model/workout.dart';
 import 'package:countdown_timer/widget/countdown_text.dart';
 import 'package:countdown_timer/widget/custom_slider.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,11 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
     ),
     RoundStates.work: RoundState(
       current: RoundStates.work,
+      next: RoundStates.rest,
+      duration: Duration.zero,
+    ),
+    RoundStates.rest: RoundState(
+      current: RoundStates.rest,
       next: RoundStates.coolDown,
       duration: Duration.zero,
     ),
@@ -64,12 +70,15 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
   StepTween _countdownAnimationTween = StepTween(begin: 0, end: 0);
 
   TimerProfile _profileSelected = TimerProfile.getDefaultProfile();
-  int _remainingWorkDuration = TimerProfile.getDefaultProfile().workDuration.inSeconds;
-  int _remainingRestDuration = TimerProfile.getDefaultProfile().restDuration.inSeconds;
-  int _remainingWarmUpDuration = TimerProfile.getDefaultProfile().warmUpDuration.inSeconds;
-  int _remainingCoolDownDuration = TimerProfile.getDefaultProfile().coolDownDuration.inSeconds;
-  int _remainingSets = TimerProfile.getDefaultProfile().setCount;
+  WorkOut _currentWorkOut;
 
+  Map<SliderItems, int> _sliderItemCount = {
+    SliderItems.warmUp: TimerProfile.defaultWarmUpDurationInSeconds,
+    SliderItems.work: TimerProfile.defaultWorkDurationInSeconds,
+    SliderItems.rest: TimerProfile.defaultRestDurationInSeconds,
+    SliderItems.coolDown: TimerProfile.defaultCoolDownDurationInSeconds,
+    SliderItems.setCount: TimerProfile.defaultSetCount,
+  };
   RoundStates _currentRoundState = RoundStates.end;
 
   @override
@@ -79,7 +88,7 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
       duration: _roundStates[_currentRoundState].duration,
     );
     _countdownController.addStatusListener((status) {
-      if (status == AnimationStatus.completed && _currentRoundState != RoundStates.coolDown) _updateRoundState(_roundStates[_currentRoundState].next);
+      if (status == AnimationStatus.completed && _currentRoundState != RoundStates.end) _updateRoundState(_roundStates[_currentRoundState].next);
     });
 
     _countdownAnimationTween.begin = _roundStates[_currentRoundState].duration.inSeconds;
@@ -93,86 +102,13 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
     final double width = device.getWidth();
     final Widget timer = (_countdownController.status == AnimationStatus.forward)
         ? CountdownText(animation: _countdownAnimation, fontSize: 100.0,)
-        : Text(durationToString(_remainingWarmUpDuration), style: TextStyle(fontSize: 100.0));
+        : Text(durationToString(_sliderItemCount[SliderItems.warmUp]), style: TextStyle(fontSize: 100.0));
 
-    final Widget warmUpDurationSlider = Row(
+    final double sliderWidth = width * 0.9;
+    final Widget sliders = Column(
       children: <Widget>[
-        Text('Warm Up Duration(MM:SS): '),
-        Slider(
-          divisions: IntervalTimer.maxWarmUpDurationInSeconds ~/ 15,
-          value: _remainingWarmUpDuration.toDouble(),
-          min: 0,
-          max: IntervalTimer.maxWarmUpDurationInSeconds.toDouble(),
-          onChanged: (newDuration) {
-            setState(() {_remainingWarmUpDuration = newDuration.toInt();}
-            );
-          },
-        ),
-        Text(durationToString(_remainingWarmUpDuration)),
-      ],
-    );
-    final Widget coolDownDurationSlider = Row(
-      children: <Widget>[
-        Text('Cool down Duration(MM:SS): '),
-        Slider(
-          divisions: IntervalTimer.maxCoolDownDurationInSeconds ~/ 15,
-          value: _remainingCoolDownDuration.toDouble(),
-          min: 0,
-          max: IntervalTimer.maxCoolDownDurationInSeconds.toDouble(),
-          onChanged: (newDuration) {
-            setState(() {_remainingCoolDownDuration = newDuration.toInt();}
-            );
-          },
-        ),
-        Text(durationToString(_remainingWarmUpDuration)),
-      ],
-    );
-    final Widget workDurationSlider = Row(
-      children: <Widget>[
-        Text('Work Duration(MM:SS): '),
-        Slider(
-          divisions: IntervalTimer.maxWorkDurationInSeconds ~/ 15,
-          value: _remainingWorkDuration.toDouble(),
-          min: 0,
-          max: IntervalTimer.maxWorkDurationInSeconds.toDouble(),
-          onChanged: (newDuration) {
-            setState(() {_remainingWorkDuration = newDuration.toInt();}
-          );
-          },
-        ),
-        Text(durationToString(_remainingWorkDuration)),
-      ],
-    );
-    final Widget restDurationSlider = Row(
-      children: <Widget>[
-        Text('Rest Duration(MM:SS): '),
-        Slider(
-          divisions: IntervalTimer.maxRestDurationInSeconds ~/ 15,
-          value: _remainingRestDuration.toDouble(),
-          min: 0,
-          max: IntervalTimer.maxRestDurationInSeconds.toDouble(),
-          onChanged: (newDuration) {
-            setState(() {_remainingRestDuration = newDuration.toInt();}
-            );
-          },
-        ),
-        Text(durationToString(_remainingRestDuration)),
-      ],
-    );
-    final Widget setCountSlider = Row(
-      children: <Widget>[
-        Text('Set of Intervals: '),
-        Slider(
-          value: _remainingSets.toDouble(),
-          min: 0,
-          max: IntervalTimer.maxSetCount.toDouble(),
-          onChanged: (newSetCount) {
-            setState(() {_remainingSets = newSetCount.toInt();}
-            );
-          },
-        ),
-        Text(_remainingSets.toString()),
-      ],
+        ...SliderItems.values.map((item) => _buildSliderItem(sliderItem: item, width: sliderWidth)).toList(),
+      ]
     );
     return Scaffold(
       appBar: AppBar(title: Text(IntervalTimer.title),),
@@ -182,33 +118,9 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
           child: Column(
             children: <Widget>[
               timer,
-              warmUpDurationSlider,
-              workDurationSlider,
-              restDurationSlider,
-              coolDownDurationSlider,
-              setCountSlider,
               IconButton(onPressed: () => _startTimer(), icon: Icon(Icons.play_arrow, color: Colors.white,),),
               Text(_currentRoundState.toString(), style: TextStyle(color: Colors.white),),
-              CustomSlider(
-                sliderItem: SliderItems.warmUp,
-                width: width * 0.9,
-              ),
-              CustomSlider(
-                sliderItem: SliderItems.work,
-                width: width * 0.9,
-              ),
-              CustomSlider(
-                sliderItem: SliderItems.rest,
-                width: width * 0.9,
-              ),
-              CustomSlider(
-                sliderItem: SliderItems.coolDown,
-                width: width * 0.9,
-              ),
-              CustomSlider(
-                sliderItem: SliderItems.setCount,
-                width: width * 0.9,
-              ),
+              sliders,
             ],
           ),
         ),
@@ -218,25 +130,43 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
 
   void _startTimer(){
     _profileSelected = TimerProfile(
-      warmUpDuration: Duration(seconds: _remainingWarmUpDuration),
-      workDuration: Duration(seconds: _remainingWorkDuration),
-      restDuration: Duration(seconds: _remainingRestDuration),
-      coolDownDuration: Duration(seconds: _remainingCoolDownDuration),
-      setCount: _remainingSets,
+      warmUpDuration: Duration(seconds: _sliderItemCount[SliderItems.warmUp]),
+      workDuration: Duration(seconds: _sliderItemCount[SliderItems.work]),
+      restDuration: Duration(seconds: _sliderItemCount[SliderItems.rest]),
+      coolDownDuration: Duration(seconds: _sliderItemCount[SliderItems.coolDown]),
+      setCount: _sliderItemCount[SliderItems.setCount],
     );
-    _updateRoundState(RoundStates.warmUp);
+    _currentWorkOut = WorkOut(startTime: DateTime.now(), profile: _profileSelected);
+    _updateRoundState(_roundStates[_currentRoundState].next);
   }
   void _updateRoundState(RoundStates roundState) async {
-    setState(() {
-      _currentRoundState = roundState;
-      log('updated round state to ' + roundState.toString());
-    });
-    Duration currentRoundStateDuration = _profileSelected.getDurationByRoundState(_currentRoundState);
-    _countdownAnimationTween.begin = currentRoundStateDuration.inSeconds;
 
-    _countdownController.duration = currentRoundStateDuration;
-    _countdownController.reset();
-    await _countdownController.forward();
+    switch (roundState) {
+      case RoundStates.coolDown:
+        _currentWorkOut.incrementSetsCompleted();
+        log(_currentWorkOut.setsCompleted.toString());
+        if (!_currentWorkOut.allSetsCompleted()) {
+          _updateRoundState(RoundStates.work);
+          break;
+        }
+        continue asNormal;
+
+      case RoundStates.end:
+        _showCompleteDialog();
+      asNormal:
+      default:
+        setState(() {
+          _currentRoundState = roundState;
+          log('updated round state to ' + roundState.toString());
+        });
+        Duration currentRoundStateDuration = _profileSelected.getDurationByRoundState(_currentRoundState);
+        _countdownAnimationTween.begin = currentRoundStateDuration.inSeconds;
+
+        _countdownController.duration = currentRoundStateDuration;
+        _countdownController.reset();
+        await _countdownController.forward();
+        break;
+    }
   }
 
   String durationToString(int durationInSeconds){
@@ -247,6 +177,24 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
     final minutesString = '$minutes'.padLeft(2, '0');
     final secondsString = '$seconds'.padLeft(2, '0');
     return '$minutesString:$secondsString';
+  }
+
+  Widget _buildSliderItem({SliderItems sliderItem, double width}){
+    return CustomSlider(
+      sliderItem: sliderItem,
+      width: width,
+      callback: (sliderItem, newCount) => _updateSliderItemCount(sliderItem, newCount),
+    );
+  }
+
+  void _updateSliderItemCount(SliderItems sliderItem, int newCount){
+    setState(() {
+      _sliderItemCount[sliderItem] = newCount;
+    });
+  }
+
+  void _showCompleteDialog() {
+
   }
 
 }

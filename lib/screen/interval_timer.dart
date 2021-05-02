@@ -8,6 +8,7 @@ import 'package:countdown_timer/model/work_state.dart';
 import 'package:countdown_timer/model/workout.dart';
 import 'package:countdown_timer/widget/countdown_text.dart';
 import 'package:countdown_timer/widget/custom_slider.dart';
+import 'package:countdown_timer/widget/profile_button.dart';
 import 'package:flutter/material.dart';
 
 class IntervalTimer extends StatefulWidget {
@@ -54,16 +55,16 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
   static const Map<RoundStates, Color> _roundStatesColors = {
     RoundStates.warmUp: Colors.pinkAccent,
     RoundStates.work: Colors.redAccent,
-    RoundStates.rest: Colors.greenAccent,
-    RoundStates.coolDown: Colors.blueGrey,
-    RoundStates.end: Colors.transparent,
+    RoundStates.rest: Colors.blue,
+    RoundStates.coolDown: Colors.teal,
+    RoundStates.end: Colors.black,
   };
 
   static const Map<RoundStates, String> _roundStatesMessages = {
     RoundStates.warmUp: 'Warm Up Phase',
-    RoundStates.work: 'Intense Work Out!',
+    RoundStates.work: 'Intense Work Out Phase, Go, Go, Go!',
     RoundStates.rest: 'Rest Phase, Slow Down!',
-    RoundStates.coolDown: 'Cool Down Phase, You Are Getting There!',
+    RoundStates.coolDown: 'Cool Down Phase, Great Job!',
     RoundStates.end: 'Start a Work Out!',
   };
   AnimationController _countdownController;
@@ -82,6 +83,7 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
   };
   RoundStates _currentRoundState = RoundStates.end;
 
+  Map<int, TimerProfile> _profileButtons = {};
   @override
   void initState() {
     _countdownController = AnimationController(
@@ -102,14 +104,13 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
     final Device device = Device(context);
     final double width = device.getWidth();
     final Widget timer = (_countdownController.status == AnimationStatus.forward)
-        ? CountdownText(animation: _countdownAnimation, fontSize: 100.0,)
-        : Text(durationToString(0), style: TextStyle(fontSize: 100.0));
-
-    final double sliderWidth = width * 0.9;
-    final Widget sliders = Column(
-      children: <Widget>[
-        ...SliderItems.values.map((item) => _buildSliderItem(sliderItem: item, width: sliderWidth)).toList(),
-      ]
+          ? CountdownText(animation: _countdownAnimation, fontSize: 200.0,)
+          : Text(durationToString(0), style: TextStyle(fontSize: 200.0)
+    );
+    final Widget statusMessage = Text(
+        (_currentRoundState == RoundStates.end)
+            ? _roundStatesMessages[_currentRoundState]
+            : _roundStatesMessages[_currentRoundState] + ' (${_currentWorkOut.setsCompleted.toString()}/${_currentWorkOut.profile.setCount.toString()})',
     );
     final Widget controlButtons = Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -119,17 +120,32 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
         IconButton(onPressed: () => _pauseAndResumeTimer(), icon: Icon(Icons.pause, color: Colors.white,),),
       ],
     );
+    final double sliderWidth = width * 0.9;
+    final Widget sliders = Column(
+      children: <Widget>[
+        ...SliderItems.values.map((item) => _buildSliderItem(sliderItem: item, width: sliderWidth)).toList(),
+      ]
+    );
+    final Widget profileButtons = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        ProfileButton(onPressed: (index, profile) => _saveCurrentProfile(index, profile), profile: _profileButtons[0], index: 0),
+        ProfileButton(onPressed: (index, profile) => _saveCurrentProfile(index, profile), profile: _profileButtons[1], index: 1),
+        ProfileButton(onPressed: (index, profile) => _saveCurrentProfile(index, profile), profile: _profileButtons[2], index: 2),
+      ],
+    );
     return Scaffold(
       appBar: AppBar(title: Text(IntervalTimer.title),),
       body: Container(
-        color: Colors.black,
+        color: _roundStatesColors[_currentRoundState],
         child: Center(
           child: Column(
             children: <Widget>[
               timer,
+              statusMessage,
               controlButtons,
-              Text(_currentRoundState.toString(), style: TextStyle(color: Colors.white),),
-              sliders,
+              if (_currentRoundState == RoundStates.end) sliders,
+              if (_currentRoundState == RoundStates.end) profileButtons
             ],
           ),
         ),
@@ -146,7 +162,7 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
       setCount: _sliderItemCount[SliderItems.setCount],
     );
     _currentWorkOut = WorkOut(startTime: DateTime.now(), profile: _profileSelected);
-    _updateRoundState(_roundStates[_currentRoundState].next);
+    _updateRoundState(RoundStates.warmUp);
   }
   void _updateRoundState(RoundStates roundState) async {
 
@@ -209,7 +225,7 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            content: Text('Bravo! You have completed a workout!!!'),
+            content: Text('Bravo! You have completed ${_currentWorkOut.setsCompleted} workout(s)!!!!'),
             actions: [
               TextButton(child: Text('Save and Share'), onPressed: () => _saveWorkOut(),),
               TextButton(child: Text('Close'), onPressed: () {
@@ -237,6 +253,10 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
     }
 
     log(_countdownController.isAnimating.toString());
+  }
+
+  void _saveCurrentProfile(int index, TimerProfile profile) {
+      _profileButtons[index] = profile;
   }
 
 }

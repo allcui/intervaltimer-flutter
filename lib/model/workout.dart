@@ -26,6 +26,6 @@ class WorkOut{
   }
 
   bool sufficientWorkOutCompleted(){
-    return setsCompleted > minimumSetsNeed;
+    return setsCompleted >= minimumSetsNeed;
   }
 }

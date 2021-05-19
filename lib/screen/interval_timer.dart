@@ -4,7 +4,6 @@ import 'package:countdown_timer/model/device.dart';
 import 'package:countdown_timer/model/round_state.dart';
 import 'package:countdown_timer/model/slider_item.dart';
 import 'package:countdown_timer/model/timer_profile.dart';
-import 'package:countdown_timer/model/work_state.dart';
 import 'package:countdown_timer/model/workout.dart';
 import 'package:countdown_timer/widget/countdown_text.dart';
 import 'package:countdown_timer/widget/custom_slider.dart';
@@ -115,9 +114,9 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
     final Widget controlButtons = Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        IconButton(onPressed: () => _startTimer(), icon: Icon(Icons.play_arrow, color: Colors.white,),),
-        IconButton(onPressed: () => _endWorkOut(), icon: Icon(Icons.stop, color: Colors.white,),),
-        IconButton(onPressed: () => _pauseAndResumeTimer(), icon: Icon(Icons.pause, color: Colors.white,),),
+        IconButton(onPressed: () => _startTimer(), icon: Icon(Icons.play_arrow, color: Colors.white, size: 40.0,),),
+        IconButton(onPressed: () => _endWorkOut(), icon: Icon(Icons.stop, color: Colors.white,size: 40.0,),),
+        IconButton(onPressed: () => _pauseAndResumeTimer(), icon: Icon(Icons.pause, color: Colors.white,size: 40.0,),),
       ],
     );
     final double sliderWidth = width * 0.9;
@@ -129,9 +128,9 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
     final Widget profileButtons = Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        ProfileButton(onPressed: (index, profile) => _saveCurrentProfile(index, profile), profile: _profileButtons[0], index: 0),
-        ProfileButton(onPressed: (index, profile) => _saveCurrentProfile(index, profile), profile: _profileButtons[1], index: 1),
-        ProfileButton(onPressed: (index, profile) => _saveCurrentProfile(index, profile), profile: _profileButtons[2], index: 2),
+        ProfileButton(onPressed: () => _profileButtonPressed(0), profile: _profileButtons[0], index: 0),
+        ProfileButton(onPressed: () => _profileButtonPressed(1), profile: _profileButtons[1], index: 1),
+        ProfileButton(onPressed: () => _profileButtonPressed(2), profile: _profileButtons[2], index: 2),
       ],
     );
     return Scaffold(
@@ -154,13 +153,7 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
   }
 
   void _startTimer(){
-    _profileSelected = TimerProfile(
-      warmUpDuration: Duration(seconds: _sliderItemCount[SliderItems.warmUp]),
-      workDuration: Duration(seconds: _sliderItemCount[SliderItems.work]),
-      restDuration: Duration(seconds: _sliderItemCount[SliderItems.rest]),
-      coolDownDuration: Duration(seconds: _sliderItemCount[SliderItems.coolDown]),
-      setCount: _sliderItemCount[SliderItems.setCount],
-    );
+    _profileSelected = _getCurrentSelectedProfile();
     _currentWorkOut = WorkOut(startTime: DateTime.now(), profile: _profileSelected);
     _updateRoundState(RoundStates.warmUp);
   }
@@ -211,6 +204,7 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
       sliderItem: sliderItem,
       width: width,
       callback: (sliderItem, newCount) => _updateSliderItemCount(sliderItem, newCount),
+      count: _sliderItemCount[sliderItem],
     );
   }
 
@@ -255,8 +249,49 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
     log(_countdownController.isAnimating.toString());
   }
 
-  void _saveCurrentProfile(int index, TimerProfile profile) {
-      _profileButtons[index] = profile;
+  void _profileButtonPressed(int index){
+    log(_profileButtons[index].toString());
+    if (_profileButtons[index] == null) {
+      _saveCurrentProfile(index);
+    } else {
+      setState(() {
+        _profileSelected = _profileButtons[index];
+        log(_profileSelected.toString());
+        _updateProfileSelected();
+      });
+    }
+  }
+
+  void _saveCurrentProfile(int index) {
+    setState(() {
+      _profileButtons[index] = _getCurrentSelectedProfile();
+    });
+    log(_profileButtons.toString());
+  }
+
+  void _updateProfileSelected(){
+    setState(() {
+      // Map<SliderItems, int> _sliderItemCount = {
+      //   SliderItems.warmUp: _profileSelected.warmUpDuration.inSeconds,
+      //   SliderItems.work: _profileSelected.workDuration.inSeconds,
+      //   SliderItems.rest: _profileSelected.restDuration.inSeconds,
+      //   SliderItems.coolDown: _profileSelected.warmUpDuration.inSeconds,
+      //   SliderItems.setCount: _profileSelected.setCount,
+      // };
+      _sliderItemCount[SliderItems.warmUp] = _profileSelected.warmUpDuration.inSeconds;
+    });
+
+    _updateSliderItemCount(SliderItems.warmUp, _profileSelected.warmUpDuration.inSeconds);
+  }
+
+  TimerProfile _getCurrentSelectedProfile(){
+    return TimerProfile(
+      warmUpDuration: Duration(seconds: _sliderItemCount[SliderItems.warmUp]),
+      workDuration: Duration(seconds: _sliderItemCount[SliderItems.work]),
+      restDuration: Duration(seconds: _sliderItemCount[SliderItems.rest]),
+      coolDownDuration: Duration(seconds: _sliderItemCount[SliderItems.coolDown]),
+      setCount: _sliderItemCount[SliderItems.setCount],
+    );
   }
 
 }

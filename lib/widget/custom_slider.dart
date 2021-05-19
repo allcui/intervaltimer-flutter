@@ -10,11 +10,13 @@ class CustomSlider extends StatefulWidget {
     this.sliderItem,
     this.width,
     this.callback,
+    this.count,
   });
 
   final SliderItems sliderItem;
   final double width;
   final void Function(SliderItems, int) callback;
+  final int count;
   @override
   _CustomSliderState createState() => _CustomSliderState();
 }
@@ -52,20 +54,12 @@ class _CustomSliderState extends State<CustomSlider> {
       isDuration: false,
     ),
   };
-
-  static const Map<SliderItems, int> defaultCounts = {
-    SliderItems.warmUp: TimerProfile.defaultWarmUpDurationInSeconds,
-    SliderItems.work: TimerProfile.defaultWorkDurationInSeconds,
-    SliderItems.rest: TimerProfile.defaultRestDurationInSeconds,
-    SliderItems.coolDown: TimerProfile.defaultCoolDownDurationInSeconds,
-    SliderItems.setCount: TimerProfile.defaultSetCount,
-  };
   
   int _count;
 
   @override
   void initState() {
-    _count = defaultCounts[widget.sliderItem];
+    _count = widget.count;
     super.initState();
   }
   @override

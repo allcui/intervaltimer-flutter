@@ -74,7 +74,7 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
   WorkOut _currentWorkOut;
   RoundStates _currentRoundState = RoundStates.end;
 
-  Map<int, TimerProfile> _profileButtons = {};
+  Map<int, TimerProfile> _userProfiles = {};
   @override
   void initState() {
     _countdownController = AnimationController(
@@ -120,9 +120,9 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
     final Widget profileButtons = Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        ProfileButton(onPressed: () => _profileButtonPressed(0), profile: _profileButtons[0], index: 0),
-        ProfileButton(onPressed: () => _profileButtonPressed(1), profile: _profileButtons[1], index: 1),
-        ProfileButton(onPressed: () => _profileButtonPressed(2), profile: _profileButtons[2], index: 2),
+        ProfileButton(onPressed: () => _profileButtonPressed(0), profile: _userProfiles[0], index: 0),
+        ProfileButton(onPressed: () => _profileButtonPressed(1), profile: _userProfiles[1], index: 1),
+        ProfileButton(onPressed: () => _profileButtonPressed(2), profile: _userProfiles[2], index: 2),
       ],
     );
     return Scaffold(
@@ -202,10 +202,13 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
 
   void _updateProfileSelected(SliderItems sliderItem, int newCount){
     TimerProfile tempProfile = _profileSelected;
+    log('tempProfile ' + tempProfile.toString());
     tempProfile.setCountBySliderItem(sliderItem, newCount);
     setState(() {
       _profileSelected = tempProfile;
     });
+    log('profile selected updated: ' + _profileSelected.toString());
+    log(_userProfiles.toString());
   }
 
   Future<dynamic> _showCompleteDialog() {
@@ -244,22 +247,23 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
   }
 
   void _profileButtonPressed(int index){
-    log(_profileButtons[index].toString());
-    if (_profileButtons[index] == null) {
+    log(index.toString());
+    log(_userProfiles.toString());
+    if (_userProfiles[index] == null) {
       log('is empty');
       _saveCurrentProfile(index);
     } else {
       setState(() {
-        _profileSelected = _profileButtons[index];
+        _profileSelected = _userProfiles[index];
       });
     }
   }
 
   void _saveCurrentProfile(int index) {
     setState(() {
-      _profileButtons[index] = _getCurrentSelectedProfile();
+      _userProfiles[index] = _profileSelected;
     });
-    log(_profileButtons.toString());
+    log(_userProfiles.toString());
   }
 
 

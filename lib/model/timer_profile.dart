@@ -106,11 +106,11 @@ class TimerProfile{
   }
   @override
   String toString(){
-    return 'warm up duration: ' + this.warmUpDuration.toString() +
-        ' work duration: ' + this.workDuration.toString() +
-        ' rest duration: ' + this.restDuration.toString() +
-        ' cooldown duration: ' + this.coolDownDuration.toString() +
-        ' set count: ' + this.setCount.toString();
+    return 'warm up duration: ' + this.warmUpDuration.inSeconds.toString();
+        // ' work duration: ' + this.workDuration.toString() +
+        // ' rest duration: ' + this.restDuration.toString() +
+        // ' cooldown duration: ' + this.coolDownDuration.toString() +
+        // ' set count: ' + this.setCount.toString();
   }
 
 }

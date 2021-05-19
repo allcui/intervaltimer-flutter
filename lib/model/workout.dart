@@ -3,6 +3,7 @@ import 'package:countdown_timer/model/timer_profile.dart';
 class WorkOut{
 
   static const int minimumSetsNeed = 1;
+
   WorkOut({
     this.id = 1,
     this.profile,

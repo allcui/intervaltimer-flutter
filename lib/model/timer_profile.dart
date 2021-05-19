@@ -1,4 +1,5 @@
 import 'package:countdown_timer/model/round_state.dart';
+import 'package:countdown_timer/model/slider_item.dart';
 import 'package:flutter/material.dart';
 
 class TimerProfile{
@@ -25,7 +26,7 @@ class TimerProfile{
     );
   }
 
-  const TimerProfile({
+  TimerProfile({
     this.id = 1,
     this.name = 'Test Profile',
     @required this.warmUpDuration,
@@ -37,11 +38,11 @@ class TimerProfile{
 
   final int id;
   final String name;
-  final Duration warmUpDuration;
-  final Duration workDuration;
-  final Duration restDuration;
-  final Duration coolDownDuration;
-  final int setCount;
+  Duration warmUpDuration;
+  Duration workDuration;
+  Duration restDuration;
+  Duration coolDownDuration;
+  int setCount;
 
   Duration getDurationByRoundState(RoundStates roundState){
     switch (roundState) {
@@ -62,6 +63,47 @@ class TimerProfile{
     }
   }
 
+  int getSliderCountBySliderItem(SliderItems sliderItem){
+    switch (sliderItem) {
+      case SliderItems.warmUp:
+        return warmUpDuration.inSeconds;
+        break;
+      case SliderItems.work:
+        return workDuration.inSeconds;
+        break;
+      case SliderItems.rest:
+        return restDuration.inSeconds;
+        break;
+      case SliderItems.coolDown:
+        return coolDownDuration.inSeconds;
+        break;
+      case SliderItems.setCount:
+        return setCount;
+        break;
+      default:
+        return 0;
+    }
+  }
+
+  void setCountBySliderItem(SliderItems sliderItem, int count){
+    switch (sliderItem) {
+      case SliderItems.warmUp:
+        warmUpDuration = Duration(seconds: count);
+        break;
+      case SliderItems.work:
+        workDuration = Duration(seconds: count);
+        break;
+      case SliderItems.rest:
+        restDuration = Duration(seconds: count);
+        break;
+      case SliderItems.coolDown:
+        coolDownDuration = Duration(seconds: count);
+        break;
+      case SliderItems.setCount:
+        setCount = count;
+        break;
+    }
+  }
   @override
   String toString(){
     return 'warm up duration: ' + this.warmUpDuration.toString() +

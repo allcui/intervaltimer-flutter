@@ -72,14 +72,6 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
 
   TimerProfile _profileSelected = TimerProfile.getDefaultProfile();
   WorkOut _currentWorkOut;
-
-  Map<SliderItems, int> _sliderItemCount = {
-    SliderItems.warmUp: TimerProfile.defaultWarmUpDurationInSeconds,
-    SliderItems.work: TimerProfile.defaultWorkDurationInSeconds,
-    SliderItems.rest: TimerProfile.defaultRestDurationInSeconds,
-    SliderItems.coolDown: TimerProfile.defaultCoolDownDurationInSeconds,
-    SliderItems.setCount: TimerProfile.defaultSetCount,
-  };
   RoundStates _currentRoundState = RoundStates.end;
 
   Map<int, TimerProfile> _profileButtons = {};
@@ -203,14 +195,16 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
     return CustomSlider(
       sliderItem: sliderItem,
       width: width,
-      callback: (sliderItem, newCount) => _updateSliderItemCount(sliderItem, newCount),
-      count: _sliderItemCount[sliderItem],
+      callback: (sliderItem, newCount) => _updateProfileSelected(sliderItem, newCount),
+      count: _profileSelected.getSliderCountBySliderItem(sliderItem),
     );
   }
 
-  void _updateSliderItemCount(SliderItems sliderItem, int newCount){
+  void _updateProfileSelected(SliderItems sliderItem, int newCount){
+    TimerProfile tempProfile = _profileSelected;
+    tempProfile.setCountBySliderItem(sliderItem, newCount);
     setState(() {
-      _sliderItemCount[sliderItem] = newCount;
+      _profileSelected = tempProfile;
     });
   }
 
@@ -252,12 +246,11 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
   void _profileButtonPressed(int index){
     log(_profileButtons[index].toString());
     if (_profileButtons[index] == null) {
+      log('is empty');
       _saveCurrentProfile(index);
     } else {
       setState(() {
         _profileSelected = _profileButtons[index];
-        log(_profileSelected.toString());
-        _updateProfileSelected();
       });
     }
   }
@@ -269,29 +262,9 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
     log(_profileButtons.toString());
   }
 
-  void _updateProfileSelected(){
-    setState(() {
-      // Map<SliderItems, int> _sliderItemCount = {
-      //   SliderItems.warmUp: _profileSelected.warmUpDuration.inSeconds,
-      //   SliderItems.work: _profileSelected.workDuration.inSeconds,
-      //   SliderItems.rest: _profileSelected.restDuration.inSeconds,
-      //   SliderItems.coolDown: _profileSelected.warmUpDuration.inSeconds,
-      //   SliderItems.setCount: _profileSelected.setCount,
-      // };
-      _sliderItemCount[SliderItems.warmUp] = _profileSelected.warmUpDuration.inSeconds;
-    });
-
-    _updateSliderItemCount(SliderItems.warmUp, _profileSelected.warmUpDuration.inSeconds);
-  }
 
   TimerProfile _getCurrentSelectedProfile(){
-    return TimerProfile(
-      warmUpDuration: Duration(seconds: _sliderItemCount[SliderItems.warmUp]),
-      workDuration: Duration(seconds: _sliderItemCount[SliderItems.work]),
-      restDuration: Duration(seconds: _sliderItemCount[SliderItems.rest]),
-      coolDownDuration: Duration(seconds: _sliderItemCount[SliderItems.coolDown]),
-      setCount: _sliderItemCount[SliderItems.setCount],
-    );
+    return _profileSelected;
   }
 
 }

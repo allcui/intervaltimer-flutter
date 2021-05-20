@@ -201,14 +201,17 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
   }
 
   void _updateProfileSelected(SliderItems sliderItem, int newCount){
-    TimerProfile tempProfile = _profileSelected;
-    log('tempProfile ' + tempProfile.toString());
+    TimerProfile tempProfile = new TimerProfile(
+      warmUpDuration: _profileSelected.warmUpDuration,
+      workDuration: _profileSelected.workDuration,
+      restDuration: _profileSelected.restDuration,
+      coolDownDuration: _profileSelected.coolDownDuration,
+      setCount: _profileSelected.setCount,
+    );
     tempProfile.setCountBySliderItem(sliderItem, newCount);
     setState(() {
       _profileSelected = tempProfile;
     });
-    log('profile selected updated: ' + _profileSelected.toString());
-    log(_userProfiles.toString());
   }
 
   Future<dynamic> _showCompleteDialog() {
@@ -254,7 +257,9 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
       _saveCurrentProfile(index);
     } else {
       setState(() {
+        log('set');
         _profileSelected = _userProfiles[index];
+        log(_profileSelected.toString());
       });
     }
   }

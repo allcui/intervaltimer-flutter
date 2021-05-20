@@ -1,0 +1,68 @@
+import 'package:flutter/material.dart';
+
+class InputField extends StatelessWidget {
+  const InputField({
+    @required this.controller,
+    @required this.labelText,
+    this.isPasswordField = false,
+    this.width = 100.0,
+  });
+
+  final TextEditingController controller;
+  final String labelText;
+  final bool isPasswordField;
+  final double width;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: width,
+        child: TextField(
+          obscureText: isPasswordField,
+          controller: controller,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: labelText,
+          ),
+        )
+    );
+  }
+}
+
+class CustomButton extends StatelessWidget {
+  const CustomButton ({
+    @required this.text,
+    @required this.onPressed,
+    this.width = 100.0,
+    this.backgroundColor = Colors.black,
+    this.textColor = Colors.white,
+    this.textSize = 30.0,
+  });
+
+  final String text;
+  final Function onPressed;
+  final double width;
+  final Color backgroundColor;
+  final Color textColor;
+  final double textSize;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: backgroundColor,
+      width: width,
+      child: OutlinedButton(
+        onPressed: onPressed,
+        child: Padding(
+          padding: EdgeInsets.all(10.0),
+          child: Text(
+            text,
+            style: TextStyle(
+              color: textColor,
+              fontSize: textSize,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

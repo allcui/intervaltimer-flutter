@@ -136,7 +136,6 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
               statusMessage,
               controlButtons,
               if (_currentRoundState == RoundStates.end) sliders,
-              if (_currentRoundState == RoundStates.end) profileButtons
             ],
           ),
         ),

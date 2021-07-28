@@ -8,6 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'interval_timer.dart';
+
+enum RequestType { login, register }
+enum AuthCodes { success, incorrectPassword, userDoesNotExist }
+enum RegisterCodes { success, duplicateUserName }
+
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -17,6 +23,17 @@ class _LoginPageState extends State<LoginPage> {
 
   final _userNameController = TextEditingController();
   final _userPasswordController = TextEditingController();
+
+  static const Map<AuthCodes, String> authenticationMessages = {
+    AuthCodes.success: 'Authenticated successfully!',
+    AuthCodes.incorrectPassword: 'Incorrect password!',
+    AuthCodes.userDoesNotExist: 'UserName entered is not found!',
+  };
+
+  static const Map<RegisterCodes, String> registerMessages = {
+    RegisterCodes.success: 'User registered successfully!',
+    RegisterCodes.duplicateUserName: 'Same user name found in database!',
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +62,11 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: height * 0.02,),
               CustomButton(
-                onPressed: () => login(),
+                onPressed: () => _sendRequest(
+                    userName: _userNameController.text,
+                    password: _userPasswordController.text,
+                    requestType: RequestType.login
+                ),
                 text: 'Go',
                 width: itemWidth,
                 backgroundColor: Colors.red,
@@ -54,7 +75,11 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: height * 0.01,),
               CustomButton(
-                onPressed: () => register(userName: _userNameController.text, password: _userPasswordController.text),
+                onPressed: () => _sendRequest(
+                    userName: _userNameController.text,
+                    password: _userPasswordController.text,
+                    requestType: RequestType.register
+                ),
                 text: 'New User',
                 width: itemWidth,
                 backgroundColor: Colors.blue,
@@ -67,12 +92,12 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  login() {
-
-  }
-
-  register({String userName, String password}) async {
-    var url = Uri.parse('https://afternoon-cliffs-94702.herokuapp.com/users/new');
+  _sendRequest({RequestType requestType,  userName, String password}) async {
+    print('called');
+    var url = Uri.parse('https://afternoon-cliffs-94702.herokuapp.com/auth/login');
+    if (requestType == RequestType.register) {
+      url = Uri.parse('https://afternoon-cliffs-94702.herokuapp.com/users/new');
+    }
     var body = jsonEncode({
       "name": "$userName",
       "password": "$password"
@@ -85,6 +110,70 @@ class _LoginPageState extends State<LoginPage> {
         "content-type": "application/json"
       }
     );
-    print(response.body);
+
+    if (requestType == RequestType.register){
+      _handleRegistration(response.body);
+    } else {
+      _handleAuthentication(response.body);
+    }
+  }
+
+  void _handleRegistration(var responseCode) {
+    if (responseCode.toString() == "0") {
+      _showAuthenticationSystemMessage(message: registerMessages[RegisterCodes.duplicateUserName]);
+    } else {
+      print('new user added, user id is ' + responseCode.toString());
+      _showAuthenticationSystemMessage(message: registerMessages[RegisterCodes.success], allowLogin: true);
+    }
+  }
+
+  void _handleAuthentication(var responseCode) {
+    if (responseCode.toString() == "0") {
+      _showAuthenticationSystemMessage(message: authenticationMessages[AuthCodes.userDoesNotExist]);
+    } else if ((responseCode.toString() == "-1")){
+      _showAuthenticationSystemMessage(message: authenticationMessages[AuthCodes.incorrectPassword]);
+    } else {
+      _goToHomePage();
+    }
+  }
+
+  Future<void> _showAuthenticationSystemMessage({String message, bool allowLogin = false }) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Authentication System Message:'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(message),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            if (allowLogin) TextButton(
+              child: const Text('Login', style: TextStyle(color: Colors.red),),
+              onPressed: () {
+                _goToHomePage();
+              },
+            ),
+            TextButton(
+              child: const Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _goToHomePage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => IntervalTimer()),
+    );
   }
 }

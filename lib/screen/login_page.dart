@@ -1,6 +1,3 @@
-
-import 'dart:developer';
-
 import 'package:countdown_timer/model/device.dart';
 import 'package:countdown_timer/widget/widgets.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'interval_timer.dart';
+import 'navigation.dart';
 
 enum RequestType { login, register }
 enum AuthCodes { success, incorrectPassword, userDoesNotExist }
@@ -173,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
   void _goToHomePage() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => IntervalTimer()),
+      MaterialPageRoute(builder: (context) => Navigation()),
     );
   }
 }

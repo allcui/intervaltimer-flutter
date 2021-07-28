@@ -1,4 +1,4 @@
-import 'package:countdown_timer/screen/navigation.dart';
+import 'package:countdown_timer/screen/login_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,7 +10,7 @@ void main() {
           bodyText2: TextStyle(color: Colors.white)
         ),
       ),
-      home: Navigation(),
+      home: LoginPage(),
     )
   );
 }

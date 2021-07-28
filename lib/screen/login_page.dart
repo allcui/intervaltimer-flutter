@@ -1,7 +1,12 @@
 
+import 'dart:developer';
+
 import 'package:countdown_timer/model/device.dart';
 import 'package:countdown_timer/widget/widgets.dart';
 import 'package:flutter/material.dart';
+
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -10,8 +15,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
-  final _playerNameController = TextEditingController();
-  final _lobbyIdController = TextEditingController();
+  final _userNameController = TextEditingController();
+  final _userPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,23 +32,32 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             children: <Widget>[
               InputField(
-                controller: _playerNameController,
+                controller: _userNameController,
                 labelText: 'Enter your name!',
                 width: itemWidth,
               ),
               SizedBox(height: height * 0.01,),
               InputField(
                 isPasswordField: true,
-                controller: _lobbyIdController,
+                controller: _userPasswordController,
                 labelText: 'Enter a password',
                 width: itemWidth,
               ),
               SizedBox(height: height * 0.02,),
               CustomButton(
-                onPressed: () => null,
+                onPressed: () => login(),
                 text: 'Go',
                 width: itemWidth,
                 backgroundColor: Colors.red,
+                textColor: Colors.white,
+                textSize: 15.0,
+              ),
+              SizedBox(height: height * 0.01,),
+              CustomButton(
+                onPressed: () => register(userName: _userNameController.text, password: _userPasswordController.text),
+                text: 'New User',
+                width: itemWidth,
+                backgroundColor: Colors.blue,
                 textColor: Colors.white,
                 textSize: 15.0,
               ),
@@ -51,5 +65,26 @@ class _LoginPageState extends State<LoginPage> {
           ),
         )
     );
+  }
+
+  login() {
+
+  }
+
+  register({String userName, String password}) async {
+    var url = Uri.parse('https://afternoon-cliffs-94702.herokuapp.com/users/new');
+    var body = jsonEncode({
+      "name": "$userName",
+      "password": "$password"
+    });
+    var response = await http.post(
+      url,
+      body: body,
+      headers: {
+        "Accept": "application/json",
+        "content-type": "application/json"
+      }
+    );
+    print(response.body);
   }
 }

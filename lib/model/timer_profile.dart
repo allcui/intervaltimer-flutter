@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 
 class TimerProfile{
 
-  static const int defaultWarmUpDurationInSeconds = 5;
-  static const int defaultWorkDurationInSeconds = 5;
-  static const int defaultRestDurationInSeconds = 5;
-  static const int defaultCoolDownDurationInSeconds = 5;
+  static const int defaultWarmUpDurationInSeconds = 3;
+  static const int defaultWorkDurationInSeconds = 3;
+  static const int defaultRestDurationInSeconds = 3;
+  static const int defaultCoolDownDurationInSeconds = 3;
 
-  static const int defaultSetCount = 3;
+  static const int defaultSetCount = 1;
 
   static const Duration defaultWarmUpDuration = Duration(seconds: defaultWarmUpDurationInSeconds);
   static const Duration defaultWorkDuration = Duration(seconds: defaultWorkDurationInSeconds);

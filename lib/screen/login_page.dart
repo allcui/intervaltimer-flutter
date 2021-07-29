@@ -1,3 +1,4 @@
+import 'package:countdown_timer/model/api_caller.dart';
 import 'package:countdown_timer/model/device.dart';
 import 'package:countdown_timer/widget/widgets.dart';
 import 'package:flutter/material.dart';
@@ -91,30 +92,33 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _sendRequest({RequestType requestType,  userName, String password}) async {
-    print('called');
-    var url = Uri.parse('https://afternoon-cliffs-94702.herokuapp.com/auth/login');
+    Controllers controller = Controllers.auth;
+    ControllerActions action = ControllerActions.login;
+
     if (requestType == RequestType.register) {
-      url = Uri.parse('https://afternoon-cliffs-94702.herokuapp.com/users/new');
+      controller = Controllers.user;
+      action = ControllerActions.add;
     }
+
     var body = jsonEncode({
       "name": "$userName",
       "password": "$password"
     });
-    var response = await http.post(
-      url,
-      body: body,
-      headers: {
-        "Accept": "application/json",
-        "content-type": "application/json"
-      }
+
+    APICaller apiCaller = APICaller(
+      controller: controller,
+      action: action,
+      requestBody: body,
     );
 
-    if (requestType == RequestType.register){
-      _handleRegistration(response.body);
-    } else {
-      _handleAuthentication(response.body);
+    var response = await apiCaller.getResponse();
+
+      if (requestType == RequestType.register){
+        _handleRegistration(response.body);
+      } else {
+        _handleAuthentication(response.body);
+      }
     }
-  }
 
   void _handleRegistration(var responseCode) {
     if (responseCode.toString() == "0") {

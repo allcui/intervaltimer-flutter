@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:countdown_timer/model/timer_profile.dart';
 
 class WorkOut{
@@ -36,13 +38,14 @@ class WorkOut{
         endTime = json["endTime"],
         setsCompleted = json["setsCompleted"];
 
-  Map<String, dynamic> toJson() => {
-    "userId" : userId,
-    "startTime" : startTime,
-    "endTime" : endTime,
-    "setsCompleted" : setsCompleted,
-  };
-
+  String toJson() {
+    return jsonEncode({
+      "userId": "$userId",
+      "startTime": "$startTime",
+      "endTime": "$endTime",
+      "setsCompleted": "$setsCompleted"
+    });
+  }
   @override
   String toString() {
     return "WorkOut => userId: $userId, startTime: $startTime, endTime: $endTime, setsCompleted: $setsCompleted.";

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:countdown_timer/model/api_caller.dart';
 import 'package:countdown_timer/model/device.dart';
 import 'package:countdown_timer/model/round_state.dart';
 import 'package:countdown_timer/model/slider_item.dart';
@@ -233,14 +234,22 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
         });
   }
 
-  void _saveWorkOut({bool shareWorkOut = true}) {
-    WorkOut workOut = WorkOut(
+  Future<void> _saveWorkOut({bool shareWorkOut = true}) async {
+    var body = WorkOut(
       userId: widget.userId,
       startTime: _currentWorkOut.startTime,
       endTime: DateTime.now(),
       setsCompleted: _currentWorkOut.setsCompleted,
+    ).toJson();
+
+    APICaller apiCaller = APICaller(
+      controller: Controllers.user,
+      action: ControllerActions.addWorkOut,
+      requestBody: body,
     );
-    print(workOut.toString());
+
+    await apiCaller.getResponse();
+
   }
 
   void _endWorkOut(){

@@ -5,28 +5,42 @@ class WorkOut{
   static const int minimumSetsNeed = 1;
 
   WorkOut({
-    this.id = 1,
+    this.userId = 1,
     this.profile,
     this.startTime,
     this.endTime,
     this.setsCompleted = 0,
   });
 
-  final int id;
-  final TimerProfile profile;
+  final int userId;
+  TimerProfile profile;
   final DateTime startTime;
   final DateTime endTime;
   int setsCompleted;
-
-  bool allSetsCompleted(){
-    return setsCompleted == profile.setCount;
-  }
 
   void incrementSetsCompleted(){
     setsCompleted++;
   }
 
+  bool allSetsCompleted(){
+    return setsCompleted == profile.setCount;
+  }
+
   bool sufficientWorkOutCompleted(){
     return setsCompleted >= minimumSetsNeed;
   }
+
+  WorkOut.fromJson(Map<String, dynamic> json)
+      : userId = json["userId"],
+        startTime = json["startTime"],
+        endTime = json["endTime"],
+        setsCompleted = json["setsCompleted"];
+
+  Map<String, dynamic> toJson() => {
+    "userId" : userId,
+    "startTime" : startTime,
+    "endTime" : endTime,
+    "setsCompleted" : setsCompleted,
+  };
+
 }

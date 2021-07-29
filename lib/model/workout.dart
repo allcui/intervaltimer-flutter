@@ -43,4 +43,8 @@ class WorkOut{
     "setsCompleted" : setsCompleted,
   };
 
+  @override
+  String toString() {
+    return "WorkOut => userId: $userId, startTime: $startTime, endTime: $endTime, setsCompleted: $setsCompleted.";
+  }
 }

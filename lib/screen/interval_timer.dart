@@ -11,6 +11,9 @@ import 'package:countdown_timer/widget/profile_button.dart';
 import 'package:flutter/material.dart';
 
 class IntervalTimer extends StatefulWidget {
+  const IntervalTimer({this.userId});
+  final int userId;
+
   static const String title = 'Interval Timer';
   static const int maxWorkDurationInSeconds = 180;
   static const int maxRestDurationInSeconds = 120;
@@ -231,7 +234,13 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
   }
 
   void _saveWorkOut({bool shareWorkOut = true}) {
-    WorkOut workOutToSave = _currentWorkOut;
+    WorkOut workOut = WorkOut(
+      userId: widget.userId,
+      startTime: _currentWorkOut.startTime,
+      endTime: DateTime.now(),
+      setsCompleted: _currentWorkOut.setsCompleted,
+    );
+    print(workOut.toString());
   }
 
   void _endWorkOut(){

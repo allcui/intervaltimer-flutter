@@ -121,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
       _showAuthenticationSystemMessage(message: registerMessages[RegisterCodes.duplicateUserName]);
     } else {
       print('new user added, user id is ' + responseCode.toString());
-      _showAuthenticationSystemMessage(message: registerMessages[RegisterCodes.success], allowLogin: true);
+      _showAuthenticationSystemMessage(message: registerMessages[RegisterCodes.success], allowLogin: true, userId: int.parse(responseCode));
     }
   }
 
@@ -131,11 +131,11 @@ class _LoginPageState extends State<LoginPage> {
     } else if ((responseCode.toString() == "-1")){
       _showAuthenticationSystemMessage(message: authenticationMessages[AuthCodes.incorrectPassword]);
     } else {
-      _goToHomePage();
+      _goToHomePage(int.parse(responseCode));
     }
   }
 
-  Future<void> _showAuthenticationSystemMessage({String message, bool allowLogin = false }) async {
+  Future<void> _showAuthenticationSystemMessage({String message, bool allowLogin = false, int userId }) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -153,7 +153,7 @@ class _LoginPageState extends State<LoginPage> {
             if (allowLogin) TextButton(
               child: const Text('Login', style: TextStyle(color: Colors.red),),
               onPressed: () {
-                _goToHomePage();
+                _goToHomePage(userId);
               },
             ),
             TextButton(
@@ -168,10 +168,10 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void _goToHomePage() {
+  void _goToHomePage(int userId) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Navigation()),
+      MaterialPageRoute(builder: (context) => Navigation(userId: userId,)),
     );
   }
 }

@@ -4,17 +4,26 @@ import 'package:countdown_timer/screen/profile_page.dart';
 import 'package:flutter/material.dart';
 
 class Navigation extends StatefulWidget {
+  const Navigation({this.userId});
+  final int userId;
   @override
   _NavigationState createState() => _NavigationState();
 }
 
 class _NavigationState extends State<Navigation> {
-  int _currentSelectedTabIndex = 1;
-  static final List<Widget> _tabs = [
-    HomePage(),
-    IntervalTimer(),
-    ProfilePage(),
-  ];
+  int _currentSelectedTabIndex;
+  List<Widget> _tabs = [];
+
+  @override
+  void initState() {
+    _tabs = [
+      HomePage(userId: widget.userId,),
+      IntervalTimer(userId: widget.userId,),
+      ProfilePage(userId: widget.userId,),
+    ];
+    _currentSelectedTabIndex = 1;
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

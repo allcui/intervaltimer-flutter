@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
 enum Controllers { user, workOut, auth }
-enum ControllerActions { add, login, addWorkOut }
+enum ControllerActions { add, login, addWorkOut, getAll }
 enum HTTPRequestTypes { post, get, delete, put }
 
 class APICaller{
@@ -18,7 +18,7 @@ class APICaller{
   static const Map<ControllerActions, String> actionPaths = {
     ControllerActions.add : '/new',
     ControllerActions.login : '/login',
-    ControllerActions.addWorkOut : '/workout/add',
+    ControllerActions.getAll: '/get/all',
   };
 
   static const Map<Controllers, String> controllerPaths = {
@@ -55,11 +55,11 @@ class APICaller{
         headers: headers
       );
     } else if (requestType == HTTPRequestTypes.get) {
-      
+      return await http.get(
+        url,
+      );
     }
 
-
-    
     return null;
   }
 

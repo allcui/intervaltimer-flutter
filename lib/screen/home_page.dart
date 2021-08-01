@@ -1,5 +1,7 @@
+import 'package:countdown_timer/model/api_caller.dart';
 import 'package:countdown_timer/model/workout.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
@@ -21,6 +23,12 @@ class HomePage extends StatelessWidget {
   }
 
   Future<List<WorkOut>>_getAllWorkOuts() async {
+    final APICaller apiCaller = APICaller(
+      controller: Controllers.workOut,
+      action: ControllerActions.getAll,
+      requestType: HTTPRequestTypes.get,
+    );
 
+    Response response = await apiCaller.getResponse();
   }
 }

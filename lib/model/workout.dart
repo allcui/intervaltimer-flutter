@@ -34,13 +34,23 @@ class WorkOut{
     return setsCompleted >= minimumSetsNeed;
   }
 
-  WorkOut.fromJson(Map<String, dynamic> json)
-      : userId = json["userId"],
-        startTime = json["startTime"],
-        endTime = json["endTime"],
-        setsCompleted = json["setsCompleted"],
-        durationInSeconds = json["durationInSeconds"]
-  ;
+  // WorkOut.fromJson(Map<String, dynamic> json)
+  //     : userId = json["userId"],
+  //       startTime = json["startTime"],
+  //       endTime = json["endTime"],
+  //       setsCompleted = json["setsCompleted"],
+  //       durationInSeconds = json["durationInSeconds"]
+  // ;
+
+  factory WorkOut.fromJson(dynamic json){
+    return WorkOut(
+      userId: json['userId'],
+      startTime: DateTime.parse(json['startTime']),
+      endTime: DateTime.parse(json["endTime"]),
+      setsCompleted: json["setsCompleted"],
+      durationInSeconds: json["durationInSeconds"],
+    );
+  }
 
   String toJson() {
     return jsonEncode({

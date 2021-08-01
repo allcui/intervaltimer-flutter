@@ -46,7 +46,7 @@ class APICaller{
     var body = requestBody;
     var headers = this.headers;
 
-    print('API call to be made=> url: [$url], body: $body.');
+    print('$requestType to be made=> url: [$url], body: $body.');
 
     if (requestType == HTTPRequestTypes.post) {
       return await http.post(
@@ -55,9 +55,7 @@ class APICaller{
         headers: headers
       );
     } else if (requestType == HTTPRequestTypes.get) {
-      return await http.get(
-        url,
-      );
+      return await http.get(url,);
     }
 
     return null;

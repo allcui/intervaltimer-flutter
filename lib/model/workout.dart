@@ -41,8 +41,8 @@ class WorkOut{
   String toJson() {
     return jsonEncode({
       "userId": "$userId",
-      "startTime": "$startTime",
-      "endTime": "$endTime",
+      "startTime": "${startTime.toIso8601String()}",
+      "endTime": "${endTime.toIso8601String()}",
       "setsCompleted": "$setsCompleted"
     });
   }

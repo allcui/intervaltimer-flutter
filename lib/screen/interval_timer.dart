@@ -243,8 +243,8 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
     ).toJson();
 
     APICaller apiCaller = APICaller(
-      controller: Controllers.user,
-      action: ControllerActions.addWorkOut,
+      controller: Controllers.workOut,
+      action: ControllerActions.add,
       requestBody: body,
     );
 

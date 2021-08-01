@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LoadingIndicator extends StatelessWidget {
-  const LoadingIndicator({this.text});
+  const LoadingIndicator({this.text = 'Loading...'});
   final String text;
 
   @override

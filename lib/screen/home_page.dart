@@ -17,7 +17,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureProvider(
         initialData: null,
-        create: (_) async => await _getAllWorkOuts(),
+        create: (_) async => await WorkOut.getAllWorkOuts(),
         child: Consumer<List<WorkOut>>(
           builder: (context, workOuts, __) => _buildHomePage(context, workOuts),
         )
@@ -38,18 +38,4 @@ class HomePage extends StatelessWidget {
     return Container();
   }
 
-  Future<List<WorkOut>> _getAllWorkOuts() async {
-    final HTTPRequestHandler httpRequestHandler = HTTPRequestHandler(
-      controller: Controllers.workOut,
-      action: ControllerActions.getAll,
-      requestType: HTTPRequestTypes.get,
-    );
-
-    Response response = await httpRequestHandler.getResponse();
-    List<WorkOut> workOuts = List<WorkOut>.from(json.decode(response.body).map((workOut) => WorkOut.fromJson(workOut)));
-    if (workOuts.isEmpty) return [];
-    //Returning an empty list to distinguish between waiting for server response and an empty list being returned.
-    print ('HTTPResponse(getAllWorkOuts) => ' + workOuts.toString());
-    return workOuts;
-  }
 }

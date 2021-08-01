@@ -60,7 +60,7 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
     RoundStates.work: Colors.redAccent,
     RoundStates.rest: Colors.blue,
     RoundStates.coolDown: Colors.teal,
-    RoundStates.end: Colors.black,
+    RoundStates.end: Colors.blueGrey,
   };
 
   static const Map<RoundStates, String> _roundStatesMessages = {

@@ -1,6 +1,9 @@
 import 'dart:convert';
 
 import 'package:countdown_timer/model/timer_profile.dart';
+import 'package:http/http.dart';
+
+import 'http_request_handler.dart';
 
 class WorkOut{
 
@@ -64,5 +67,21 @@ class WorkOut{
   @override
   String toString() {
     return "WorkOut => userId: $userId, startTime: $startTime, endTime: $endTime, setsCompleted: $setsCompleted, durationInSeconds: $durationInSeconds";
+  }
+  
+  static Future<List<WorkOut>> getAllWorkOuts({int filterByUserId}) async {
+    final HTTPRequestHandler httpRequestHandler = HTTPRequestHandler(
+      controller: Controllers.workOut,
+      action: ControllerActions.getAll,
+      requestType: HTTPRequestTypes.get,
+    );
+
+    Response response = await httpRequestHandler.getResponse();
+    List<WorkOut> workOuts = List<WorkOut>.from(json.decode(response.body).map((workOut) => WorkOut.fromJson(workOut)));
+    if (workOuts.isEmpty) return [];
+    //Returning an empty list to distinguish between waiting for server response and an empty list being returned.
+    print ('HTTPResponse(getAllWorkOuts) => ' + workOuts.toString());
+    if (filterByUserId != null) {workOuts.removeWhere((workOut) => workOut.userId != filterByUserId);}
+    return workOuts;
   }
 }

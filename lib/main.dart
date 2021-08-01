@@ -9,10 +9,10 @@ void main() {
       theme: ThemeData(
         primaryColor: Colors.orangeAccent,
         textTheme: TextTheme(
-          bodyText2: TextStyle(color: Colors.white)
+          bodyText2: TextStyle(color: Colors.black)
         ),
       ),
-      home: Navigation(userId: 123,),
+      home: LoginPage(),
     )
   );
 }

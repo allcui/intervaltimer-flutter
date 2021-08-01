@@ -129,19 +129,16 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
         ProfileButton(onPressed: () => _profileButtonPressed(2), profile: _userProfiles[2], index: 2),
       ],
     );
-    return Scaffold(
-      appBar: AppBar(title: Text(IntervalTimer.title),),
-      body: Container(
-        color: _roundStatesColors[_currentRoundState],
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              timer,
-              statusMessage,
-              controlButtons,
-              if (_currentRoundState == RoundStates.end) sliders,
-            ],
-          ),
+    return Container(
+      color: _roundStatesColors[_currentRoundState],
+      child: Center(
+        child: Column(
+          children: <Widget>[
+            timer,
+            statusMessage,
+            controlButtons,
+            if (_currentRoundState == RoundStates.end) sliders,
+          ],
         ),
       ),
     );

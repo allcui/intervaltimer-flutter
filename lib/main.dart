@@ -12,7 +12,7 @@ void main() {
           bodyText2: TextStyle(color: Colors.black)
         ),
       ),
-      home: LoginPage(),
+      home: Navigation(userId: 1,),
     )
   );
 }

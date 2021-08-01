@@ -35,6 +35,9 @@ dependencies:
   # Providers.
   provider: ^5.0.0
 
+  # To handle date time conversion.
+  intl: 0.15.7
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

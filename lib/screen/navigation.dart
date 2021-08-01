@@ -11,6 +11,11 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> {
+  static const List<String> _tabTitles = [
+    'Home',
+    'Interval Timer - Work Out Time!',
+    'My Profile'
+  ];
   int _currentSelectedTabIndex;
   List<Widget> _tabs = [];
 
@@ -27,6 +32,7 @@ class _NavigationState extends State<Navigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text(_tabTitles[_currentSelectedTabIndex])),
       body: Container(
         child: Center(child: _tabs.elementAt(_currentSelectedTabIndex)),
       ),

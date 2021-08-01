@@ -1,6 +1,6 @@
 import 'package:countdown_timer/model/http_request_handler.dart';
 import 'package:countdown_timer/model/workout.dart';
-import 'package:countdown_timer/widget/loading_indicator.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
@@ -25,14 +25,14 @@ class WorkOutItem extends StatelessWidget {
     if (userName == null) return Container();
     return Card(
       child: Column(
-        children: <Widget>[
-          Text(userName),
-          Text(workOut.startTime.toString()),
-          Text(workOut.endTime.toString()),
-          Text('sets completed: ${workOut.setsCompleted.toString()}'),
-          Text('duration in seconds: ${workOut.durationInSeconds.toString()}'),
-        ],
-      ),
+          children: <Widget>[
+            Text(userName),
+            Text(_convertDateTime(workOut.startTime)),
+            Text(_convertDateTime(workOut.endTime)),
+            Text('sets completed: ${workOut.setsCompleted.toString()}'),
+            Text(_convertDuration(Duration(seconds: workOut.durationInSeconds))),
+          ],
+        ),
     );
   }
 
@@ -46,5 +46,16 @@ class WorkOutItem extends StatelessWidget {
 
     Response response = await httpRequestHandler.getResponse();
     return response.body.toString();
+  }
+
+  String _convertDateTime(DateTime dateTime) {
+    return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
+  }
+
+  String _convertDuration(Duration duration){
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
 }

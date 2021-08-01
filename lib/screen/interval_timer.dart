@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:countdown_timer/model/api_caller.dart';
+import 'package:countdown_timer/model/http_request_handler.dart';
 import 'package:countdown_timer/model/device.dart';
 import 'package:countdown_timer/model/round_state.dart';
 import 'package:countdown_timer/model/slider_item.dart';
@@ -243,7 +243,7 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
       durationInSeconds: DateTime.now().difference(_currentWorkOut.startTime).inSeconds,
     ).toJson();
 
-    APICaller apiCaller = APICaller(
+    HTTPRequestHandler apiCaller = HTTPRequestHandler(
       controller: Controllers.workOut,
       action: ControllerActions.add,
       requestBody: body,

@@ -1,4 +1,4 @@
-import 'package:countdown_timer/model/api_caller.dart';
+import 'package:countdown_timer/model/http_request_handler.dart';
 import 'package:countdown_timer/model/device.dart';
 import 'package:countdown_timer/widget/widgets.dart';
 import 'package:flutter/material.dart';
@@ -105,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
       "password": "$password"
     });
 
-    APICaller apiCaller = APICaller(
+    HTTPRequestHandler apiCaller = HTTPRequestHandler(
       controller: controller,
       action: action,
       requestBody: body,

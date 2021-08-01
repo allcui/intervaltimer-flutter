@@ -12,6 +12,7 @@ class WorkOut{
     this.startTime,
     this.endTime,
     this.setsCompleted = 0,
+    this.durationInSeconds = 0,
   });
 
   final int userId;
@@ -19,6 +20,7 @@ class WorkOut{
   final DateTime startTime;
   final DateTime endTime;
   int setsCompleted;
+  int durationInSeconds;
 
   void incrementSetsCompleted(){
     setsCompleted++;
@@ -36,18 +38,21 @@ class WorkOut{
       : userId = json["userId"],
         startTime = json["startTime"],
         endTime = json["endTime"],
-        setsCompleted = json["setsCompleted"];
+        setsCompleted = json["setsCompleted"],
+        durationInSeconds = json["durationInSeconds"]
+  ;
 
   String toJson() {
     return jsonEncode({
       "userId": "$userId",
       "startTime": "${startTime.toIso8601String()}",
       "endTime": "${endTime.toIso8601String()}",
-      "setsCompleted": "$setsCompleted"
+      "setsCompleted": "$setsCompleted",
+      "durationInSeconds": "$durationInSeconds",
     });
   }
   @override
   String toString() {
-    return "WorkOut => userId: $userId, startTime: $startTime, endTime: $endTime, setsCompleted: $setsCompleted.";
+    return "WorkOut => userId: $userId, startTime: $startTime, endTime: $endTime, setsCompleted: $setsCompleted, durationInSeconds: $durationInSeconds";
   }
 }

@@ -240,6 +240,7 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
       startTime: _currentWorkOut.startTime,
       endTime: DateTime.now(),
       setsCompleted: _currentWorkOut.setsCompleted,
+      durationInSeconds: DateTime.now().difference(_currentWorkOut.startTime).inSeconds,
     ).toJson();
 
     APICaller apiCaller = APICaller(

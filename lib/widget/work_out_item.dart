@@ -53,12 +53,11 @@ class WorkOutItem extends StatelessWidget {
             end: Alignment.bottomLeft,
             colors: [
               Colors.blue,
-              Colors.purple,
+              Colors.black,
             ],
           )
       ),
-      height: height * 0.15,
-      width: width * 0.4,
+      width: (device.isLargeScreen()) ? width * 0.4 : width * 0.75,
       padding: EdgeInsets.only(left: 80.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,20 +99,25 @@ class WorkOutItem extends StatelessWidget {
             left: 50.0,
             child: workOutInfo
         ),
-        Container(
-          alignment: FractionalOffset.centerLeft,
-          child: UserProfile(
-            userName: userName,
-            height: 100.0,
+        Positioned(
+          top: 25,
+          child: Container(
+            alignment: FractionalOffset.centerLeft,
+            child: UserProfile(
+              userName: userName,
+              height: 100.0,
+            ),
           ),
         ),
         SizedBox(width: 20.0,),
       ],
     );
 
+    print('111    ' + (height * 0.15).toString() + '   ' + (width * 0.45).toString());
     return Container(
-      height: height * 0.15,
-      width: width * 0.7,
+      margin: (device.isLargeScreen()) ? EdgeInsets.zero : EdgeInsets.all(10.0) ,
+      height: height * 0.18,
+      width: (device.isLargeScreen()) ? width * 0.45 : width * 0.8,
       child: child,
     );
   }

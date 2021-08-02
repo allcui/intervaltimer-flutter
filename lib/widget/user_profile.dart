@@ -9,8 +9,9 @@ class UserProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     String initial = _getInitialFromUserName(userName);
     return CircleAvatar(
+      backgroundImage: AssetImage('assets/workoutbg.png'),
       radius: (height) / 2,
-      child: Center(child: Text(initial, style: TextStyle(fontSize: height * 0.4)),),
+      child: Center(child: Text(initial, style: TextStyle(fontSize: height * 0.4, color: Colors.white)),),
     );
   }
 

@@ -7,7 +7,7 @@ class Device{
   final BuildContext context;
 
   bool isLargeScreen(){
-    return MediaQuery.of(context).size.width > 900.0;
+    return MediaQuery.of(context).size.width > 1040.0;
   }
 
   double getWidth(){

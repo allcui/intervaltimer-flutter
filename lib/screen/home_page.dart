@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:countdown_timer/model/device.dart';
 import 'package:countdown_timer/model/http_request_handler.dart';
 import 'package:countdown_timer/model/workout.dart';
 import 'package:countdown_timer/widget/loading_indicator.dart';
@@ -27,6 +28,15 @@ class HomePage extends StatelessWidget {
   Widget _buildHomePage(BuildContext context, List<WorkOut> workOuts) {
     if (workOuts == null) return LoadingIndicator(text: 'Loading...');
     if (workOuts.isEmpty) return Center(child: Text('No one has shared there progress yet!', style: TextStyle(color: Colors.black),));
+    Device device = Device(context);
+    if (device.isLargeScreen()){
+      return GridView.count(
+        padding: EdgeInsets.only(top: 45.0, left: 50.0),
+        childAspectRatio: 3.5,
+        crossAxisCount: 2,
+        children: workOuts.map((workOut) => WorkOutItem(workOut: workOut,)).toList()
+      );
+    }
     return ListView.builder(
       itemCount: workOuts.length,
       itemBuilder: (BuildContext context, int index){

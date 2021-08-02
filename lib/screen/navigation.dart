@@ -12,7 +12,7 @@ class Navigation extends StatefulWidget {
 
 class _NavigationState extends State<Navigation> {
   static const List<String> _tabTitles = [
-    'Home',
+    'Home - Check Out Other Folks!',
     'Interval Timer - Work Out Time!',
     'My Profile'
   ];
@@ -32,6 +32,7 @@ class _NavigationState extends State<Navigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(title: Text(_tabTitles[_currentSelectedTabIndex])),
       body: Container(
         child: Center(child: _tabs.elementAt(_currentSelectedTabIndex)),

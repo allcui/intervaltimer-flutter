@@ -4,6 +4,7 @@ import 'package:countdown_timer/model/user.dart';
 import 'package:countdown_timer/model/workout.dart';
 import 'package:countdown_timer/widget/loading_indicator.dart';
 import 'package:countdown_timer/widget/work_out_item.dart';
+import 'package:countdown_timer/widget/work_out_item_user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -67,6 +68,24 @@ class ProfilePage extends StatelessWidget {
         ],
       );
 
+    final Widget dashBoard = Container(
+      margin: EdgeInsets.only(top: 20.0, bottom: 5.0),
+      height: height * 0.2,
+      width: width * 0.9,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          gradient: LinearGradient(
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            colors: [
+              Colors.yellow,
+              Colors.orange,
+              Colors.red,
+            ],
+          )
+      ),
+    );
+
     Widget child;
     workOuts.sort((a, b) =>
         b.startTime.compareTo(a.startTime)); //Sorting workouts by start time.
@@ -87,14 +106,14 @@ class ProfilePage extends StatelessWidget {
       shrinkWrap: true,
       itemCount: workOuts.length,
       itemBuilder: (BuildContext context, int index) {
-        return WorkOutItem(workOut: workOuts[index]);
+        return WorkOutItemUser(workOut: workOuts[index]);
       },
     );
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Text('wodasda'),
+          dashBoard,
           Flexible(child: child),
         ],
       ),

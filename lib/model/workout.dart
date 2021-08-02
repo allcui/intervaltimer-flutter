@@ -84,5 +84,4 @@ class WorkOut{
     if (filterByUserId != null) {workOuts.removeWhere((workOut) => workOut.userId != filterByUserId);}
     return workOuts;
   }
-
 }

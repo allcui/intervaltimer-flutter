@@ -14,7 +14,7 @@ class _NavigationState extends State<Navigation> {
   static const List<String> _tabTitles = [
     'Home - Check Out Other Folks!',
     'Interval Timer - Work Out Time!',
-    'My Profile'
+    'My Profile - See How You Are Doing!'
   ];
   int _currentSelectedTabIndex;
   List<Widget> _tabs = [];
@@ -26,7 +26,7 @@ class _NavigationState extends State<Navigation> {
       IntervalTimer(userId: widget.userId,),
       ProfilePage(userId: widget.userId,),
     ];
-    _currentSelectedTabIndex = 0;
+    _currentSelectedTabIndex = 2;
     super.initState();
   }
   @override

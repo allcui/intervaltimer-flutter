@@ -38,7 +38,7 @@ class HomePage extends StatelessWidget {
       );
     }
     return ListView.builder(
-      padding: EdgeInsets.only(left: 30.0),
+      padding: EdgeInsets.only(left: 15.0),
       itemCount: workOuts.length,
       itemBuilder: (BuildContext context, int index){
         return WorkOutItem(

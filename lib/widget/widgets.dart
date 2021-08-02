@@ -68,16 +68,17 @@ class CustomButton extends StatelessWidget {
 }
 
 class IconText extends StatelessWidget {
-  const IconText(this.icon, this.text);
-  final Widget icon;
+  const IconText({this.icon, this.text, this.color = Colors.white60});
+  final IconData icon;
   final String text;
+  final Color color;
   @override
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        icon,
+        Icon(icon, color: color,),
         SizedBox(width: 5.0,),
-        Text(text, style: TextStyle(color: Colors.white60)),
+        Text(text, style: TextStyle(color: color)),
       ],
     );
   }

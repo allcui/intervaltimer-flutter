@@ -1,3 +1,4 @@
+import 'package:countdown_timer/model/date_time_handler.dart';
 import 'package:countdown_timer/model/device.dart';
 import 'package:countdown_timer/model/user.dart';
 import 'package:countdown_timer/model/workout.dart';
@@ -30,16 +31,16 @@ class WorkOutItem extends StatelessWidget {
     print(width.toString() + ' ' + height.toString());
 
    final String workOutSetsText = '${workOut.setsCompleted} set(s) completed!';
-    final Widget workOutTime = Row(
+   final Widget workOutTime = Row(
         children: <Widget>[
           IconText(
-            Icon(Icons.date_range, color: Colors.white60,),
-            _convertDateTime(workOut.startTime),
+            icon:Icons.date_range,
+            text: DateTimeHandler.convertDateTimeToString(workOut.startTime),
           ),
-          SizedBox(width: 25.0,),
+          SizedBox(width: 15.0,),
           IconText(
-            Icon(Icons.timer_sharp, color: Colors.white60),
-            _convertToMinutes(workOut.durationInSeconds),
+            icon: Icons.timer_sharp,
+            text: DateTimeHandler.convertSecondsToMinutesInString(workOut.durationInSeconds),
           )
         ],
     );
@@ -55,7 +56,7 @@ class WorkOutItem extends StatelessWidget {
             ],
           )
       ),
-      width: (device.isLargeScreen()) ? width * 0.4 : width * 0.75,
+      width: (device.isLargeScreen()) ? width * 0.4 : width * 0.8,
       padding: EdgeInsets.only(left: 80.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,15 +119,5 @@ class WorkOutItem extends StatelessWidget {
       width: (device.isLargeScreen()) ? width * 0.45 : width * 0.8,
       child: child,
     );
-  }
-
-  String _convertDateTime(DateTime dateTime) {
-    return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
-  }
-
-  String _convertToMinutes(int seconds) {
-    if (seconds < 60) return '$seconds seconds';
-    int minutes = (seconds / 60).truncate();
-    return (minutes % 60).toString().padLeft(2, '0') + ' minutes';
   }
 }

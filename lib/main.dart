@@ -7,12 +7,12 @@ void main() {
   runApp(
     MaterialApp(
       theme: ThemeData(
-        primaryColor: Colors.blueAccent,
+        primaryColor: Color(0xff1b1b1f),
         textTheme: TextTheme(
           bodyText2: TextStyle(color: Colors.white)
         ),
       ),
-      home: Navigation(userId: 1,),
+      home: LoginPage(),
     )
   );
 }

@@ -1,22 +1,21 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 class CountdownText extends AnimatedWidget {
   const CountdownText({
     Key key,
     @required this.animation,
-    this.fontSize = 20.0,
+    this.minimumFontSize = 20.0,
   }) :  super(key: key, listenable: animation);
 
   final Animation<int> animation;
-  final double fontSize;
+  final double minimumFontSize;
 
   @override
   build(BuildContext context) {
-    return Text(
+    return AutoSizeText(
       durationToString(animation.value.floor()),
-      style: TextStyle(
-        fontSize: fontSize,
-      ),
+      minFontSize: minimumFontSize,
     );
   }
 

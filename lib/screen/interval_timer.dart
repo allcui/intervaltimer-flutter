@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:countdown_timer/model/http_request_handler.dart';
 import 'package:countdown_timer/model/device.dart';
 import 'package:countdown_timer/model/round_state.dart';
@@ -97,22 +98,31 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     final Device device = Device(context);
+    final double height = device.getHeight();
     final double width = device.getWidth();
-    final Widget timer = (_countdownController.status == AnimationStatus.forward)
-          ? CountdownText(animation: _countdownAnimation, fontSize: 200.0,)
-          : Text(durationToString(0), style: TextStyle(fontSize: 200.0)
-    );
+    double minimumFontSize = 180.0;
+    if (device.isLargeScreen()) minimumFontSize = 400.0;
+    final Widget timer = Expanded(child: Container(
+        alignment: Alignment.center,
+        color: _roundStatesColors[_currentRoundState],
+        width: width * 0.9,
+        child: (_countdownController.status == AnimationStatus.forward)
+            ? CountdownText(animation: _countdownAnimation, minimumFontSize: minimumFontSize,)
+            : AutoSizeText(durationToString(0), minFontSize: minimumFontSize,
+        )
+    ));
     final Widget statusMessage = Text(
         (_currentRoundState == RoundStates.end)
             ? _roundStatesMessages[_currentRoundState]
             : _roundStatesMessages[_currentRoundState] + ' (${_currentWorkOut.setsCompleted.toString()}/${_currentWorkOut.profile.setCount.toString()})',
+      style: TextStyle(fontSize: (device.isLargeScreen()) ? 30.0 : 20.0),
     );
     final Widget controlButtons = Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        IconButton(onPressed: () => _startTimer(), icon: Icon(Icons.play_arrow, color: Colors.white, size: 40.0,),),
-        IconButton(onPressed: () => _endWorkOut(), icon: Icon(Icons.stop, color: Colors.white,size: 40.0,),),
-        IconButton(onPressed: () => _pauseAndResumeTimer(), icon: Icon(Icons.pause, color: Colors.white,size: 40.0,),),
+        IconButton(onPressed: () => _startTimer(), icon: Icon(Icons.play_arrow, color: Colors.green, size: 40.0,),),
+        IconButton(onPressed: () => _endWorkOut(), icon: Icon(Icons.stop, color: Colors.red,size: 40.0,),),
+        IconButton(onPressed: () => _pauseAndResumeTimer(), icon: Icon(Icons.pause, color: Colors.grey,size: 40.0,),),
       ],
     );
     final double sliderWidth = width * 0.9;
@@ -130,14 +140,15 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
       ],
     );
     return Container(
-      color: _roundStatesColors[_currentRoundState],
       child: Center(
         child: Column(
           children: <Widget>[
             timer,
             statusMessage,
             controlButtons,
+            SizedBox(height: 20.0,),
             if (_currentRoundState == RoundStates.end) sliders,
+            SizedBox(height: 20.0,)
           ],
         ),
       ),

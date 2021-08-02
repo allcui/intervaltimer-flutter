@@ -67,6 +67,7 @@ class _CustomSliderState extends State<CustomSlider> {
     final double width = widget.width;
     final SliderItem sliderItem = sliderItems[widget.sliderItem];
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Container(
           width: width * 0.4,
@@ -84,7 +85,7 @@ class _CustomSliderState extends State<CustomSlider> {
         Container(
           alignment: Alignment.centerRight,
           width: width * 0.1,
-          child: Text((sliderItem.isDuration) ? durationToString(_count) : _count.toString()),
+          child: Text((sliderItem.isDuration) ? durationToString(_count) : _count.toString() + ' sets'),
         )
       ],
     );

@@ -41,6 +41,9 @@ dependencies:
   # Animated Texts
   animated_text_kit: ^4.2.1
 
+  # Auto Size Text for timer
+  auto_size_text: ^2.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -61,6 +64,7 @@ flutter:
    - assets/workoutbg.png
    - assets/avatorbg.png
    - assets/startbg.png
+   - assets/logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

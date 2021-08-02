@@ -15,7 +15,7 @@ class WorkOutItemUser extends StatelessWidget {
     final double height = device.getHeight();
 
 
-    int numberOfDaysAgo = DateTime.now().difference(workOut.startTime).inDays;
+    final int numberOfDaysAgo = DateTime.now().difference(workOut.startTime).inDays;
     String numberOfDaysAgoText = '$numberOfDaysAgo days ago';
     if (numberOfDaysAgo <= 0) numberOfDaysAgoText = 'Today';
     final String dateText = '${DateTimeHandler.convertDateTimeToString(workOut.startTime)} ($numberOfDaysAgoText)';

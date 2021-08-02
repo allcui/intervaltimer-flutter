@@ -68,13 +68,15 @@ class CustomButton extends StatelessWidget {
 }
 
 class IconText extends StatelessWidget {
-  const IconText({this.icon, this.text, this.color = Colors.white60});
+  const IconText({this.icon, this.text, this.color = Colors.white60, this.centerAlign = false});
   final IconData icon;
   final String text;
   final Color color;
+  final bool centerAlign;
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: (centerAlign) ? MainAxisAlignment.center : MainAxisAlignment.start,
       children: <Widget>[
         Icon(icon, color: color,),
         SizedBox(width: 5.0,),

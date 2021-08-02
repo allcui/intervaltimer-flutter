@@ -7,6 +7,6 @@ class DateTimeHandler{
   static convertSecondsToMinutesInString(int seconds){
     if (seconds < 60) return '$seconds seconds';
     int minutes = (seconds / 60).truncate();
-    return (minutes % 60).toString().padLeft(2, '0') + ' minutes';
+    return minutes.toString() + ' minutes';
   }
 }

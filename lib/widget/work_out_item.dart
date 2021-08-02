@@ -1,13 +1,10 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:countdown_timer/model/device.dart';
-import 'package:countdown_timer/model/http_request_handler.dart';
 import 'package:countdown_timer/model/user.dart';
 import 'package:countdown_timer/model/workout.dart';
 import 'package:countdown_timer/widget/user_profile.dart';
 import 'package:countdown_timer/widget/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 class WorkOutItem extends StatelessWidget {

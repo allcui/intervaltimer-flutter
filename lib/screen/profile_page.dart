@@ -31,14 +31,13 @@ class ProfilePage extends StatelessWidget {
       ],
       child: Consumer2<List<WorkOut>, String>(
           builder: (context, workOuts, userName, __) =>
-              _buildHomePage(context, workOuts, userName)),
+              _buildProfilePage(context, workOuts, userName)),
       );
   }
 
-  Widget _buildHomePage(BuildContext context, List<WorkOut> workOuts, String userName) {
-    Widget child = Container();
-    if (workOuts == null) child = LoadingIndicator(text: 'Loading...');
-    if (workOuts.isEmpty) child = Center(child: Column(
+  Widget _buildProfilePage(BuildContext context, List<WorkOut> workOuts, String userName) {
+    if (workOuts == null || userName == null) return LoadingIndicator(text: 'Loading...');
+    if (workOuts.isEmpty) return Center(child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Image.asset('assets/startbg.png'),
@@ -49,8 +48,12 @@ class ProfilePage extends StatelessWidget {
 
     final Device device = Device(context);
 
+    Widget child;
+    workOuts.sort((a, b) => b.startTime.compareTo(a.startTime)); //Sorting workouts by start time.
+    print(workOuts.toString());
     if (device.isLargeScreen()) {
       child = GridView.count(
+          shrinkWrap: true,
           padding: EdgeInsets.only(top: 45.0, left: 50.0),
           childAspectRatio: 3.5,
           crossAxisCount: 2,
@@ -58,6 +61,7 @@ class ProfilePage extends StatelessWidget {
       );
     }
     child = ListView.builder(
+      shrinkWrap: true,
       itemCount: workOuts.length,
       itemBuilder: (BuildContext context, int index){
         return WorkOutItem(
@@ -65,10 +69,14 @@ class ProfilePage extends StatelessWidget {
         );
       },
     );
-    return Column(
-      children: <Widget>[
-        child,
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text('wodasda'),
+          Flexible(child: child),
+        ],
+      ),
     );
   }
 }

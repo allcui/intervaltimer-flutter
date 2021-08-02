@@ -34,9 +34,7 @@ class _NavigationState extends State<Navigation> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(title: Text(_tabTitles[_currentSelectedTabIndex])),
-      body: Container(
-        child: Center(child: _tabs.elementAt(_currentSelectedTabIndex)),
-      ),
+      body: _tabs.elementAt(_currentSelectedTabIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

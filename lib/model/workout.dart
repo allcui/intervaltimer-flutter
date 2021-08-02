@@ -82,6 +82,8 @@ class WorkOut{
     //Returning an empty list to distinguish between waiting for server response and an empty list being returned.
     print ('HTTPResponse(getAllWorkOuts) => ' + workOuts.toString());
     if (filterByUserId != null) {workOuts.removeWhere((workOut) => workOut.userId != filterByUserId);}
+    workOuts.sort((a, b) =>
+        b.startTime.compareTo(a.startTime));
     return workOuts;
   }
 }

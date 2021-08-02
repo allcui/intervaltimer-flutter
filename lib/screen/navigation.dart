@@ -49,8 +49,8 @@ class _NavigationState extends State<Navigation> {
               height: MediaQuery.of(context).padding.top + AppBar().preferredSize.height,
             ),
             ListTile(
-              leading: Icon(Icons.arrow_back, color: Colors.black,),
-              title: Text('Back to alcui.dev', style: TextStyle(color: Colors.black)),
+              leading: Icon(Icons.arrow_back, color: Colors.blue,),
+              title: Text('Back to alcui.dev', style: TextStyle(color: Colors.blue,)),
               onTap: () {html.window.location.href = "https://alcui.dev";}
             ),
             ListTile(

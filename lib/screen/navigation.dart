@@ -8,8 +8,9 @@ import 'dart:html' as html;
 import 'login_page.dart';
 
 class Navigation extends StatefulWidget {
-  const Navigation({this.userId});
+  const Navigation({this.userId, this.authenticated = false});
   final int userId;
+  final bool authenticated;
   @override
   _NavigationState createState() => _NavigationState();
 }
@@ -53,11 +54,11 @@ class _NavigationState extends State<Navigation> {
               title: Text('Back to alcui.dev', style: TextStyle(color: Colors.blue,)),
               onTap: () {html.window.location.href = "https://alcui.dev";}
             ),
-            ListTile(
+            if (widget.authenticated)ListTile(
                 leading: Icon(Icons.logout, color: Colors.black,),
                 title: Text('Log Out!', style: TextStyle(color: Colors.black)),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginPage()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => Navigation(authenticated: false,)));
                 }
             ),
           ],
@@ -76,7 +77,7 @@ class _NavigationState extends State<Navigation> {
             ]
         ),
       ),
-      body: _tabs.elementAt(_currentSelectedTabIndex),
+      body: (widget.authenticated) ? _tabs.elementAt(_currentSelectedTabIndex) : LoginPage(),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -102,6 +103,7 @@ class _NavigationState extends State<Navigation> {
   }
 
   void _onTabPressed(int index) {
+    if (!widget.authenticated) return;
     setState(() {
       _currentSelectedTabIndex = index;
     });

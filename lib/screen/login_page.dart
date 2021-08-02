@@ -41,53 +41,52 @@ class _LoginPageState extends State<LoginPage> {
     final double itemWidth = device.isLargeScreen() ? width * 0.6 : width * 0.9;
     final double height = device.getHeight();
     if (height < 350) return Text('Why is your screen height < 350?');
-    return Scaffold(
-        body: Container(
-          padding: EdgeInsets.symmetric(vertical: height * 0.3),
-          alignment: Alignment.center,
-          child: Column(
-            children: <Widget>[
-              InputField(
-                controller: _userNameController,
-                labelText: 'Enter your name!',
-                width: itemWidth,
-              ),
-              SizedBox(height: height * 0.01,),
-              InputField(
-                isPasswordField: true,
-                controller: _userPasswordController,
-                labelText: 'Enter a password',
-                width: itemWidth,
-              ),
-              SizedBox(height: height * 0.02,),
-              CustomButton(
-                onPressed: () => _sendRequest(
-                    userName: _userNameController.text,
-                    password: _userPasswordController.text,
-                    requestType: RequestType.login
-                ),
-                text: 'Go',
-                width: itemWidth,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                textSize: 15.0,
-              ),
-              SizedBox(height: height * 0.01,),
-              CustomButton(
-                onPressed: () => _sendRequest(
-                    userName: _userNameController.text,
-                    password: _userPasswordController.text,
-                    requestType: RequestType.register
-                ),
-                text: 'New User',
-                width: itemWidth,
-                backgroundColor: Colors.blue,
-                textColor: Colors.white,
-                textSize: 15.0,
-              ),
-            ],
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.symmetric(vertical: height * 0.3),
+      alignment: Alignment.center,
+      child: Column(
+        children: <Widget>[
+          InputField(
+            controller: _userNameController,
+            labelText: 'Enter your name!',
+            width: itemWidth,
           ),
-        )
+          SizedBox(height: height * 0.01,),
+          InputField(
+            isPasswordField: true,
+            controller: _userPasswordController,
+            labelText: 'Enter a password',
+            width: itemWidth,
+          ),
+          SizedBox(height: height * 0.02,),
+          CustomButton(
+            onPressed: () => _sendRequest(
+                userName: _userNameController.text,
+                password: _userPasswordController.text,
+                requestType: RequestType.login
+            ),
+            text: 'Go',
+            width: itemWidth,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            textSize: 15.0,
+          ),
+          SizedBox(height: height * 0.01,),
+          CustomButton(
+            onPressed: () => _sendRequest(
+                userName: _userNameController.text,
+                password: _userPasswordController.text,
+                requestType: RequestType.register
+            ),
+            text: 'New User',
+            width: itemWidth,
+            backgroundColor: Colors.blue,
+            textColor: Colors.white,
+            textSize: 15.0,
+          ),
+        ],
+      ),
     );
   }
 
@@ -175,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
   void _goToHomePage(int userId) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Navigation(userId: userId,)),
+      MaterialPageRoute(builder: (context) => Navigation(userId: userId, authenticated: true,)),
     );
   }
 }

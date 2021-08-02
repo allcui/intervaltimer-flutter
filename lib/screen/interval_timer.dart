@@ -232,7 +232,7 @@ class _IntervalTimerState extends State<IntervalTimer> with SingleTickerProvider
           return AlertDialog(
             content: Text('Bravo! You have completed ${_currentWorkOut.setsCompleted} workout(s)!!!!'),
             actions: [
-              TextButton(child: Text('Save and Share'), onPressed: () => _saveWorkOut(),),
+              //TextButton(child: Text('Save and Share'), onPressed: () => _saveWorkOut(),),
               TextButton(child: Text('Close'), onPressed: () {
                 Navigator.of(context).pop();
                 _saveWorkOut(shareWorkOut: false);

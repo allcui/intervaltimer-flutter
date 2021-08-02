@@ -26,7 +26,7 @@ class _NavigationState extends State<Navigation> {
       IntervalTimer(userId: widget.userId,),
       ProfilePage(userId: widget.userId,),
     ];
-    _currentSelectedTabIndex = 1;
+    _currentSelectedTabIndex = 0;
     super.initState();
   }
   @override

@@ -1,5 +1,9 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:countdown_timer/model/device.dart';
 import 'package:countdown_timer/model/http_request_handler.dart';
 import 'package:countdown_timer/model/workout.dart';
+import 'package:countdown_timer/widget/user_profile.dart';
+import 'package:countdown_timer/widget/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -9,30 +13,108 @@ class WorkOutItem extends StatelessWidget {
   const WorkOutItem({this.workOut});
   final WorkOut workOut;
 
-
   @override
   Widget build(BuildContext context) {
     return FutureProvider(
         initialData: null,
         create: (_) async => await _getUserNameById(),
         child: Consumer<String>(
-          builder: (context, userName, __) => _buildWorkOutItem(context, userName),
-        )
-    );
+          builder: (context, userName, __) =>
+              _buildWorkOutItem(context, userName),
+        ));
   }
 
   Widget _buildWorkOutItem(BuildContext context, String userName) {
     if (userName == null) return Container();
-    return Card(
+    final Device device = Device(context);
+    final double width = device.getWidth();
+    final double height = device.getHeight();
+    print(width.toString() + ' ' + height.toString());
+
+   final String workOutSetsText = '${workOut.setsCompleted} set(s) completed!';
+    final Widget workOutTime = Row(
+        children: <Widget>[
+          IconText(
+            Icon(Icons.date_range, color: Colors.white60,),
+            _convertDateTime(workOut.startTime),
+          ),
+          SizedBox(width: 25.0,),
+          IconText(
+            Icon(Icons.timer_sharp, color: Colors.white60),
+            _convertToMinutes(workOut.durationInSeconds),
+          )
+        ],
+    );
+    final Widget workOutInfo = Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(10.0)) ,
+          gradient: LinearGradient(
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            colors: [
+              Colors.blue,
+              Colors.purple,
+            ],
+          )
+      ),
+      height: height * 0.15,
+      width: width * 0.4,
+      padding: EdgeInsets.only(left: 80.0),
       child: Column(
-          children: <Widget>[
-            Text(userName),
-            Text(_convertDateTime(workOut.startTime)),
-            Text(_convertDateTime(workOut.endTime)),
-            Text('sets completed: ${workOut.setsCompleted.toString()}'),
-            Text(_convertDuration(Duration(seconds: workOut.durationInSeconds))),
-          ],
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(height: 20.0,),
+          Text(
+              userName,
+              style: TextStyle(
+                fontSize: 22.0,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              )
+          ),
+          SizedBox(height: 5.0,),
+          Text(
+              workOutSetsText,
+              style: TextStyle(
+                fontSize: 18.0,
+                color: Colors.white70,
+              )
+          ),
+          Container(
+              margin: EdgeInsets.symmetric(vertical: 8.0),
+              height: 2.0,
+              width: 200.0,
+              color: Color(0xff00c6ff)
+          ),
+          SizedBox(height: 15.0,),
+          workOutTime,
+          SizedBox(height: 20.0,),
+        ],
+      )
+    );
+
+    final Widget child = Stack(
+      children: <Widget>[
+        SizedBox(width: 20.0,),
+        Positioned(
+            left: 50.0,
+            child: workOutInfo
         ),
+        Container(
+          alignment: FractionalOffset.centerLeft,
+          child: UserProfile(
+            userName: userName,
+            height: 100.0,
+          ),
+        ),
+        SizedBox(width: 20.0,),
+      ],
+    );
+
+    return Container(
+      height: height * 0.15,
+      width: width * 0.7,
+      child: child,
     );
   }
 
@@ -52,10 +134,9 @@ class WorkOutItem extends StatelessWidget {
     return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
   }
 
-  String _convertDuration(Duration duration){
-    String twoDigits(int n) => n.toString().padLeft(2, "0");
-    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+  String _convertToMinutes(int seconds) {
+    if (seconds < 60) return '$seconds seconds';
+    int minutes = (seconds / 60).truncate();
+    return (minutes % 60).toString().padLeft(2, '0') + ' minutes';
   }
 }

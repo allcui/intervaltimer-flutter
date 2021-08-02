@@ -66,3 +66,19 @@ class CustomButton extends StatelessWidget {
     );
   }
 }
+
+class IconText extends StatelessWidget {
+  const IconText(this.icon, this.text);
+  final Widget icon;
+  final String text;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        icon,
+        SizedBox(width: 5.0,),
+        Text(text, style: TextStyle(color: Colors.white60)),
+      ],
+    );
+  }
+}

@@ -28,7 +28,7 @@ class HomePage extends StatelessWidget {
   Widget _buildHomePage(BuildContext context, List<WorkOut> workOuts) {
     if (workOuts == null) return LoadingIndicator(text: 'Loading...');
     if (workOuts.isEmpty) return Center(child: Text('No one has shared there progress yet!', style: TextStyle(color: Colors.black),));
-    Device device = Device(context);
+    final Device device = Device(context);
     if (device.isLargeScreen()){
       return GridView.count(
         padding: EdgeInsets.only(top: 45.0, left: 50.0),
@@ -38,6 +38,7 @@ class HomePage extends StatelessWidget {
       );
     }
     return ListView.builder(
+      padding: EdgeInsets.only(left: 30.0),
       itemCount: workOuts.length,
       itemBuilder: (BuildContext context, int index){
         return WorkOutItem(

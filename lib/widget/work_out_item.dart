@@ -1,6 +1,7 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:countdown_timer/model/device.dart';
 import 'package:countdown_timer/model/http_request_handler.dart';
+import 'package:countdown_timer/model/user.dart';
 import 'package:countdown_timer/model/workout.dart';
 import 'package:countdown_timer/widget/user_profile.dart';
 import 'package:countdown_timer/widget/widgets.dart';
@@ -17,7 +18,7 @@ class WorkOutItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureProvider(
         initialData: null,
-        create: (_) async => await _getUserNameById(),
+        create: (_) async => await User.getUserNameById(workOut.userId),
         child: Consumer<String>(
           builder: (context, userName, __) =>
               _buildWorkOutItem(context, userName),
@@ -120,18 +121,6 @@ class WorkOutItem extends StatelessWidget {
       width: (device.isLargeScreen()) ? width * 0.45 : width * 0.8,
       child: child,
     );
-  }
-
-  Future<String> _getUserNameById() async {
-    final HTTPRequestHandler httpRequestHandler = HTTPRequestHandler(
-      controller: Controllers.user,
-      action: ControllerActions.getUserName,
-      requestType: HTTPRequestTypes.get,
-      pathVariable: '/${workOut.userId}',
-    );
-
-    Response response = await httpRequestHandler.getResponse();
-    return response.body.toString();
   }
 
   String _convertDateTime(DateTime dateTime) {

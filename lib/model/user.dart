@@ -1,5 +1,9 @@
 import 'dart:convert';
 
+import 'package:http/http.dart';
+
+import 'http_request_handler.dart';
+
 class User{
   const User({
     this.id,
@@ -16,6 +20,18 @@ class User{
      "name": "$name",
      "password": "$password"
    });
+  }
+  
+  static Future<String> getUserNameById(int userId) async {
+    final HTTPRequestHandler httpRequestHandler = HTTPRequestHandler(
+      controller: Controllers.user,
+      action: ControllerActions.getUserName,
+      requestType: HTTPRequestTypes.get,
+      pathVariable: '/$userId',
+    );
+
+    Response response = await httpRequestHandler.getResponse();
+    return response.body.toString();
   }
 
 }

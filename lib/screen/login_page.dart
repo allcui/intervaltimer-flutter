@@ -175,10 +175,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _userRegistrationValidation() {
-    if (_userNameController.text == null ||
-        _userNameController.text == '' ||
-        _userPasswordController.text == null ||
-        _userPasswordController.text == ''
+    String userName = _userNameController.text.trim();
+    String password = _userPasswordController.text.trim();
+    if (userName == null ||
+        userName == '' ||
+        password == null ||
+        password == ''
     ) {
       _showAlertDialog();
     } else {

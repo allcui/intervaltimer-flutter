@@ -74,11 +74,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           SizedBox(height: height * 0.01,),
           CustomButton(
-            onPressed: () => _sendRequest(
-                userName: _userNameController.text,
-                password: _userPasswordController.text,
-                requestType: RequestType.register
-            ),
+            onPressed: () => _userRegistrationValidation(),
             text: 'New User',
             width: itemWidth,
             backgroundColor: Colors.blue,
@@ -175,6 +171,50 @@ class _LoginPageState extends State<LoginPage> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => Navigation(userId: userId, authenticated: true,)),
+    );
+  }
+
+  void _userRegistrationValidation() {
+    if (_userNameController.text == null ||
+        _userNameController.text == '' ||
+        _userPasswordController.text == null ||
+        _userPasswordController.text == ''
+    ) {
+      _showAlertDialog();
+    } else {
+      _sendRequest(
+          userName: _userNameController.text,
+          password: _userPasswordController.text,
+          requestType: RequestType.register
+      );
+    }
+  }
+
+  Future<void> _showAlertDialog() {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('New User Registration Error!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Username and password cannot be empty!'),
+                Text('Enter your desired username and password, then click on New User!'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

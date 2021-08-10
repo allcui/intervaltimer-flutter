@@ -1,5 +1,6 @@
 import 'package:countdown_timer/model/http_request_handler.dart';
 import 'package:countdown_timer/model/device.dart';
+import 'package:countdown_timer/screen/registration_page.dart';
 import 'package:countdown_timer/widget/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -19,9 +20,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   final _userNameController = TextEditingController();
   final _userPasswordController = TextEditingController();
+  final _userNameRegistrationController = TextEditingController();
+  final _userPasswordRegistrationController = TextEditingController();
 
   static const Map<AuthCodes, String> authenticationMessages = {
     AuthCodes.success: 'Authenticated successfully!',
@@ -52,29 +54,34 @@ class _LoginPageState extends State<LoginPage> {
             labelText: 'Enter your name!',
             width: itemWidth,
           ),
-          SizedBox(height: height * 0.01,),
+          SizedBox(
+            height: height * 0.01,
+          ),
           InputField(
             isPasswordField: true,
             controller: _userPasswordController,
             labelText: 'Enter a password',
             width: itemWidth,
           ),
-          SizedBox(height: height * 0.02,),
+          SizedBox(
+            height: height * 0.02,
+          ),
           CustomButton(
             onPressed: () => _sendRequest(
                 userName: _userNameController.text,
                 password: _userPasswordController.text,
-                requestType: RequestType.login
-            ),
+                requestType: RequestType.login),
             text: 'Go',
             width: itemWidth,
             backgroundColor: Colors.red,
             textColor: Colors.white,
             textSize: 15.0,
           ),
-          SizedBox(height: height * 0.01,),
+          SizedBox(
+            height: height * 0.01,
+          ),
           CustomButton(
-            onPressed: () => _userRegistrationValidation(),
+            onPressed: () => _openRegistrationPage(),
             text: 'New User',
             width: itemWidth,
             backgroundColor: Colors.blue,
@@ -86,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _sendRequest({RequestType requestType,  userName, String password}) async {
+  _sendRequest({RequestType requestType, userName, String password}) async {
     Controllers controller = Controllers.auth;
     ControllerActions action = ControllerActions.login;
 
@@ -95,10 +102,7 @@ class _LoginPageState extends State<LoginPage> {
       action = ControllerActions.add;
     }
 
-    var body = jsonEncode({
-      "name": "$userName",
-      "password": "$password"
-    });
+    var body = jsonEncode({"name": "$userName", "password": "$password"});
 
     HTTPRequestHandler apiCaller = HTTPRequestHandler(
       controller: controller,
@@ -108,33 +112,40 @@ class _LoginPageState extends State<LoginPage> {
 
     var response = await apiCaller.getResponse();
 
-      if (requestType == RequestType.register){
-        _handleRegistration(response.body);
-      } else {
-        _handleAuthentication(response.body);
-      }
+    if (requestType == RequestType.register) {
+      _handleRegistration(response.body);
+    } else {
+      _handleAuthentication(response.body);
     }
+  }
 
   void _handleRegistration(var responseCode) {
     if (responseCode.toString() == "0") {
-      _showAuthenticationSystemMessage(message: registerMessages[RegisterCodes.duplicateUserName]);
+      _showAuthenticationSystemMessage(
+          message: registerMessages[RegisterCodes.duplicateUserName]);
     } else {
       print('new user added, user id is ' + responseCode.toString());
-      _showAuthenticationSystemMessage(message: registerMessages[RegisterCodes.success], allowLogin: true, userId: int.parse(responseCode));
+      _showAuthenticationSystemMessage(
+          message: registerMessages[RegisterCodes.success],
+          allowLogin: true,
+          userId: int.parse(responseCode));
     }
   }
 
   void _handleAuthentication(var responseCode) {
     if (responseCode.toString() == "0") {
-      _showAuthenticationSystemMessage(message: authenticationMessages[AuthCodes.userDoesNotExist]);
-    } else if ((responseCode.toString() == "-1")){
-      _showAuthenticationSystemMessage(message: authenticationMessages[AuthCodes.incorrectPassword]);
+      _showAuthenticationSystemMessage(
+          message: authenticationMessages[AuthCodes.userDoesNotExist]);
+    } else if ((responseCode.toString() == "-1")) {
+      _showAuthenticationSystemMessage(
+          message: authenticationMessages[AuthCodes.incorrectPassword]);
     } else {
       _goToHomePage(int.parse(responseCode));
     }
   }
 
-  Future<void> _showAuthenticationSystemMessage({String message, bool allowLogin = false, int userId }) async {
+  Future<void> _showAuthenticationSystemMessage(
+      {String message, bool allowLogin = false, int userId}) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -149,12 +160,16 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           actions: <Widget>[
-            if (allowLogin) TextButton(
-              child: const Text('Login', style: TextStyle(color: Colors.red),),
-              onPressed: () {
-                _goToHomePage(userId);
-              },
-            ),
+            if (allowLogin)
+              TextButton(
+                child: const Text(
+                  'Login',
+                  style: TextStyle(color: Colors.red),
+                ),
+                onPressed: () {
+                  _goToHomePage(userId);
+                },
+              ),
             TextButton(
               child: const Text('Close'),
               onPressed: () {
@@ -170,25 +185,27 @@ class _LoginPageState extends State<LoginPage> {
   void _goToHomePage(int userId) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Navigation(userId: userId, authenticated: true,)),
+      MaterialPageRoute(
+          builder: (context) => Navigation(
+                userId: userId,
+                authenticated: true,
+              )),
     );
   }
 
   void _userRegistrationValidation() {
-    String userName = _userNameController.text.trim();
-    String password = _userPasswordController.text.trim();
+    String userName = _userNameRegistrationController.text.trim();
+    String password = _userPasswordRegistrationController.text.trim();
     if (userName == null ||
         userName == '' ||
         password == null ||
-        password == ''
-    ) {
+        password == '') {
       _showAlertDialog();
     } else {
       _sendRequest(
           userName: _userNameController.text,
           password: _userPasswordController.text,
-          requestType: RequestType.register
-      );
+          requestType: RequestType.register);
     }
   }
 
@@ -203,13 +220,62 @@ class _LoginPageState extends State<LoginPage> {
             child: ListBody(
               children: <Widget>[
                 Text('Username and password cannot be empty!'),
-                Text('Enter your desired username and password, then click on New User!'),
+                SizedBox(height: 5.0,),
+                Text(
+                    'Enter your desired username and password, then click on Register!'),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
               child: const Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _openRegistrationPage() {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        final Device device = Device(context);
+        final double width = device.getWidth();
+        final double height = device.getHeight();
+        return AlertDialog(
+          title: Center(child: const Text('New User Registration')),
+          content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                  InputField(
+                    controller: _userNameRegistrationController,
+                    labelText: 'Enter your name!',
+                    width: width * 0.6,
+                  ),
+                  SizedBox(
+                    height: height * 0.01,
+                  ),
+                  InputField(
+                    isPasswordField: true,
+                    controller: _userPasswordRegistrationController,
+                    labelText: 'Enter a password',
+                    width: width * 0.6,
+                  ),
+          ]),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Register', style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold, color: Colors.blue)),
+              onPressed: () {
+                _userRegistrationValidation();
+              },
+            ),
+            TextButton(
+              child: Text('Close', style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold, color: Colors.black)),
               onPressed: () {
                 Navigator.of(context).pop();
               },

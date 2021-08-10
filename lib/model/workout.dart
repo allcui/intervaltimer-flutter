@@ -4,6 +4,7 @@ import 'package:countdown_timer/model/timer_profile.dart';
 import 'package:http/http.dart';
 
 import 'http_request_handler.dart';
+import 'package:flutter/material.dart';
 
 class WorkOut{
 
@@ -86,4 +87,31 @@ class WorkOut{
         b.startTime.compareTo(a.startTime));
     return workOuts;
   }
+
+  static List<WorkOut> getListOfDummyWorkOuts({@required int userId}){
+    return [
+      WorkOut(
+        userId: userId,
+        startTime: DateTime.parse("2020-07-20 20:18:04Z"),
+        endTime: DateTime.parse("2020-07-20 20:28:04Z"),
+        setsCompleted: 11,
+        durationInSeconds: DateTime.parse("2020-07-20 20:28:04Z").difference(DateTime.parse("2020-07-20 20:18:04Z")).inSeconds,
+      ),
+      WorkOut(
+        userId: userId,
+        startTime: DateTime.parse("2020-07-21 21:16:04Z"),
+        endTime: DateTime.parse("2020-07-21 21:38:04Z"),
+        setsCompleted: 11,
+        durationInSeconds: DateTime.parse("2020-07-21 21:38:04Z").difference(DateTime.parse("2020-07-21 21:16:04Z")).inSeconds,
+      ),
+      WorkOut(
+        userId: userId,
+        startTime: DateTime.parse("2020-07-25 22:08:04Z"),
+        endTime: DateTime.parse("2020-07-25 22:58:04Z"),
+        setsCompleted: 11,
+        durationInSeconds: DateTime.parse("2020-07-25 22:58:04Z").difference(DateTime.parse("2020-07-25 22:08:04Z")).inSeconds,
+      ),
+    ];
+  }
+
 }

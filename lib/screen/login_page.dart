@@ -1,5 +1,6 @@
 import 'package:countdown_timer/model/http_request_handler.dart';
 import 'package:countdown_timer/model/device.dart';
+import 'package:countdown_timer/model/workout.dart';
 import 'package:countdown_timer/screen/registration_page.dart';
 import 'package:countdown_timer/widget/widgets.dart';
 import 'package:flutter/material.dart';
@@ -20,10 +21,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _userNameController = TextEditingController();
-  final _userPasswordController = TextEditingController();
-  final _userNameRegistrationController = TextEditingController();
-  final _userPasswordRegistrationController = TextEditingController();
+  final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _userPasswordController = TextEditingController();
+  final TextEditingController _userNameRegistrationController = TextEditingController();
+  final TextEditingController _userPasswordRegistrationController = TextEditingController();
 
   static const Map<AuthCodes, String> authenticationMessages = {
     AuthCodes.success: 'Authenticated successfully!',
@@ -36,6 +37,8 @@ class _LoginPageState extends State<LoginPage> {
     RegisterCodes.duplicateUserName: 'Same user name found in database!',
   };
 
+  bool _isLoadingDummyData = true;
+
   @override
   Widget build(BuildContext context) {
     final Device device = Device(context);
@@ -45,10 +48,30 @@ class _LoginPageState extends State<LoginPage> {
     if (height < 350) return Text('Why is your screen height < 350?');
     return Container(
       color: Colors.white,
-      padding: EdgeInsets.symmetric(vertical: height * 0.3),
+      padding: EdgeInsets.symmetric(vertical: height * 0.25),
       alignment: Alignment.center,
       child: Column(
         children: <Widget>[
+          Text('The free tier hosting service wipes out database once in a while', style: TextStyle(color: Colors.blue),),
+          SizedBox(height: 5.0),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Checkbox(
+                focusNode: FocusNode(skipTraversal: true, canRequestFocus: false),
+                checkColor: Colors.white,
+                value: _isLoadingDummyData,
+                onChanged: (bool value) {
+                  setState(() {
+                    _isLoadingDummyData = value;
+                    print(_isLoadingDummyData);
+                  });
+                },
+              ),
+              Text('Let us load some data!', style: TextStyle(color: Colors.black),)
+            ],
+          ),
+          SizedBox(height: 10.0),
           InputField(
             controller: _userNameController,
             labelText: 'Enter your name!',
@@ -67,10 +90,7 @@ class _LoginPageState extends State<LoginPage> {
             height: height * 0.02,
           ),
           CustomButton(
-            onPressed: () => _sendRequest(
-                userName: _userNameController.text,
-                password: _userPasswordController.text,
-                requestType: RequestType.login),
+            onPressed: () => _userNameAndPasswordValidation(RequestType.login),
             text: 'Go',
             width: itemWidth,
             backgroundColor: Colors.red,
@@ -183,6 +203,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _goToHomePage(int userId) {
+    if (_isLoadingDummyData) _sendDummyDataToServer(userId);
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -193,36 +214,37 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void _userRegistrationValidation() {
-    String userName = _userNameRegistrationController.text.trim();
-    String password = _userPasswordRegistrationController.text.trim();
+  void _userNameAndPasswordValidation(RequestType requestType) {
+    String userName = _userNameController.text.trim();
+    String password = _userPasswordController.text.trim();
+    if (requestType == RequestType.register) {
+      userName = _userNameRegistrationController.text.trim();
+      password = _userPasswordRegistrationController.text.trim();
+    }
     if (userName == null ||
         userName == '' ||
         password == null ||
         password == '') {
-      _showAlertDialog();
+      _showAlertDialog(requestType);
     } else {
       _sendRequest(
-          userName: _userNameController.text,
-          password: _userPasswordController.text,
-          requestType: RequestType.register);
+          userName: userName,
+          password: password,
+          requestType: requestType);
     }
   }
 
-  Future<void> _showAlertDialog() {
+  Future<void> _showAlertDialog(RequestType requestType) {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('New User Registration Error!'),
+          title: (requestType == RequestType.register) ? Text('New User Registration Error!') : Text('User Name And Password Input Error!'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 Text('Username and password cannot be empty!'),
-                SizedBox(height: 5.0,),
-                Text(
-                    'Enter your desired username and password, then click on Register!'),
               ],
             ),
           ),
@@ -271,7 +293,7 @@ class _LoginPageState extends State<LoginPage> {
             TextButton(
               child: Text('Register', style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold, color: Colors.blue)),
               onPressed: () {
-                _userRegistrationValidation();
+                _userNameAndPasswordValidation(RequestType.register);
               },
             ),
             TextButton(
@@ -284,5 +306,23 @@ class _LoginPageState extends State<LoginPage> {
         );
       },
     );
+  }
+
+  Future<void> _sendDummyDataToServer(int userId)async {
+    List<WorkOut> userWorkOuts = await WorkOut.getAllWorkOuts(filterByUserId: userId);
+    if (userWorkOuts.isNotEmpty) return;
+
+    List<dynamic> workOuts = WorkOut.getListOfDummyWorkOuts(userId: userId);
+
+    for (WorkOut item in workOuts){
+      var body = item.toJson();
+
+      HTTPRequestHandler apiCaller = HTTPRequestHandler(
+        controller: Controllers.workOut,
+        action: ControllerActions.add,
+        requestBody: body,
+      );
+      await apiCaller.getResponse();
+    }
   }
 }

@@ -52,7 +52,7 @@ class _NavigationState extends State<Navigation> {
             ListTile(
               leading: Icon(Icons.arrow_back, color: Colors.blue,),
               title: Text('Back to alcui.dev', style: TextStyle(color: Colors.blue,)),
-              onTap: () {html.window.location.href = "https://alcui.dev";}
+              onTap: () {html.window.location.href = "https://www.alcui.dev";}
             ),
             if (widget.authenticated)ListTile(
                 leading: Icon(Icons.logout, color: Colors.black,),

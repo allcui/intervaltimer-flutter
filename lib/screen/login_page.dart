@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final Device device = Device(context);
     final double width = device.getWidth();
-    final double itemWidth = device.isLargeScreen() ? width * 0.6 : width * 0.9;
+    final double itemWidth = device.isLargeScreen() ? width * 0.45 : width * 0.9;
     final double height = device.getHeight();
     if (height < 350) return Text('Why is your screen height < 350?');
     return Container(

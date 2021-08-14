@@ -53,65 +53,67 @@ class _LoginPageState extends State<LoginPage> {
       alignment: Alignment.center,
       child: Stack(
         children: <Widget>[
-          Column(
-            children: <Widget>[
-              Text('The free tier hosting service wipes out database once in a while', style: TextStyle(color: Colors.blue),),
-              SizedBox(height: 5.0),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Checkbox(
-                    focusNode: FocusNode(skipTraversal: true, canRequestFocus: false),
-                    checkColor: Colors.white,
-                    value: _isLoadingDummyData,
-                    onChanged: (bool value) {
-                      setState(() {
-                        _isLoadingDummyData = value;
-                        print(_isLoadingDummyData);
-                      });
-                    },
-                  ),
-                  Text('Let us load some data!', style: TextStyle(color: Colors.black),)
-                ],
-              ),
-              SizedBox(height: 10.0),
-              InputField(
-                controller: _userNameController,
-                labelText: 'Enter your name!',
-                width: itemWidth,
-              ),
-              SizedBox(
-                height: height * 0.01,
-              ),
-              InputField(
-                isPasswordField: true,
-                controller: _userPasswordController,
-                labelText: 'Enter a password',
-                width: itemWidth,
-              ),
-              SizedBox(
-                height: height * 0.02,
-              ),
-              CustomButton(
-                onPressed: () => _userNameAndPasswordValidation(RequestType.login),
-                text: 'Go',
-                width: itemWidth,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                textSize: 15.0,
-              ),
-              SizedBox(
-                height: height * 0.01,
-              ),
-              CustomButton(
-                onPressed: () => _openRegistrationPage(),
-                text: 'New User',
-                width: itemWidth,
-                backgroundColor: Colors.blue,
-                textColor: Colors.white,
-                textSize: 15.0,
-              ),
-            ],
+          Center(
+            child: Column(
+              children: <Widget>[
+                Text('The free tier hosting service wipes out database once in a while', style: TextStyle(color: Colors.blue),),
+                SizedBox(height: 5.0),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Checkbox(
+                      focusNode: FocusNode(skipTraversal: true, canRequestFocus: false),
+                      checkColor: Colors.white,
+                      value: _isLoadingDummyData,
+                      onChanged: (bool value) {
+                        setState(() {
+                          _isLoadingDummyData = value;
+                          print(_isLoadingDummyData);
+                        });
+                      },
+                    ),
+                    Text('Let us load some data!', style: TextStyle(color: Colors.black),)
+                  ],
+                ),
+                SizedBox(height: 10.0),
+                InputField(
+                  controller: _userNameController,
+                  labelText: 'Enter your name!',
+                  width: itemWidth,
+                ),
+                SizedBox(
+                  height: height * 0.01,
+                ),
+                InputField(
+                  isPasswordField: true,
+                  controller: _userPasswordController,
+                  labelText: 'Enter a password',
+                  width: itemWidth,
+                ),
+                SizedBox(
+                  height: height * 0.02,
+                ),
+                CustomButton(
+                  onPressed: () => _userNameAndPasswordValidation(RequestType.login),
+                  text: 'Go',
+                  width: itemWidth,
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                  textSize: 15.0,
+                ),
+                SizedBox(
+                  height: height * 0.01,
+                ),
+                CustomButton(
+                  onPressed: () => _openRegistrationPage(),
+                  text: 'New User',
+                  width: itemWidth,
+                  backgroundColor: Colors.blue,
+                  textColor: Colors.white,
+                  textSize: 15.0,
+                ),
+              ],
+            ),
           ),
           if (_isWaitingForServerResponse) Center(child: CircularProgressIndicator()),
         ],

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 void main() {
   runApp(
     MaterialApp(
+      title: 'Countdown Timer',
       theme: ThemeData(
         primaryColor: Color(0xff1b1b1f),
         textTheme: TextTheme(

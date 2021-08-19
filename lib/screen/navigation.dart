@@ -78,27 +78,30 @@ class _NavigationState extends State<Navigation> {
         ),
       ),
       body: (widget.authenticated) ? _tabs.elementAt(_currentSelectedTabIndex) : LoginPage(),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people_alt),
-            label: 'Home',
-            backgroundColor: Colors.red,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.workspaces_filled),
-            label: 'Workout!',
-            backgroundColor: Colors.green,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.pets_rounded),
-            label: 'Profile',
-            backgroundColor: Colors.purple,
-          ),
-        ],
-        currentIndex: _currentSelectedTabIndex,
-        onTap: _onTabPressed,
-    ),
+      bottomNavigationBar:
+      (widget.authenticated)
+          ? BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.people_alt),
+                label: 'Home',
+                backgroundColor: Colors.red,
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.workspaces_filled),
+                label: 'Workout!',
+                backgroundColor: Colors.green,
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.pets_rounded),
+                label: 'Profile',
+                backgroundColor: Colors.purple,
+              ),
+            ],
+          currentIndex: _currentSelectedTabIndex,
+          onTap: _onTabPressed,
+          )
+          : null
     );
   }
 

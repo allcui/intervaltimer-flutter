@@ -283,24 +283,28 @@ class _LoginPageState extends State<LoginPage> {
         final double height = device.getHeight();
         return AlertDialog(
           title: Center(child: const Text('New User Registration')),
-          content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                  InputField(
-                    controller: _userNameRegistrationController,
-                    labelText: 'Enter your name!',
-                    width: width * 0.6,
-                  ),
-                  SizedBox(
-                    height: height * 0.01,
-                  ),
-                  InputField(
-                    isPasswordField: true,
-                    controller: _userPasswordRegistrationController,
-                    labelText: 'Enter a password',
-                    width: width * 0.6,
-                  ),
-          ]),
+          content: Stack(
+            children: <Widget>[Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                    InputField(
+                      controller: _userNameRegistrationController,
+                      labelText: 'Enter your name!',
+                      width: width * 0.6,
+                    ),
+                    SizedBox(
+                      height: height * 0.01,
+                    ),
+                    InputField(
+                      isPasswordField: true,
+                      controller: _userPasswordRegistrationController,
+                      labelText: 'Enter a password',
+                      width: width * 0.6,
+                    ),
+            ]),
+            if (_isWaitingForServerResponse) Center(child: CircularProgressIndicator()),
+          ]
+          ),
           actions: <Widget>[
             TextButton(
               child: Text('Register', style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold, color: Colors.blue)),

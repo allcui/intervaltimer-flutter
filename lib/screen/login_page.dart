@@ -280,6 +280,7 @@ class _LoginPageState extends State<LoginPage> {
         return AlertDialog(
           title: Center(child: const Text('New User Registration')),
           content: Stack(
+            alignment: AlignmentDirectional.center,
             children: <Widget>[Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
@@ -298,7 +299,7 @@ class _LoginPageState extends State<LoginPage> {
                       width: width * 0.6,
                     ),
             ]),
-            if (_isWaitingForServerResponse) Center(child: CircularProgressIndicator()),
+            if (_isWaitingForServerResponse) CircularProgressIndicator(),
           ]
           ),
           actions: <Widget>[
